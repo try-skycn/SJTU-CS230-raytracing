@@ -16,7 +16,7 @@ void print(const Screen &screen) {
 	printf("255\n");
 	for (int i = 0; i < screen.height; ++i) {
 		for (int j = 0; j < screen.width; ++j) {
-			Color color = screen.get(i, j) * 255.0;
+			Color color = min(screen.get(i, j), 1.0) * 255.0;
 			printf("%d %d %d", int(color.x), int(color.y), int(color.z));
 			if (j + 1 == screen.width) {
 				printf("\n");
