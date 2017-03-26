@@ -32,8 +32,8 @@ struct Vec {
 	float sqrlen() const { return dot(*this); }
 	float len() const { return std::sqrtf(sqrlen()); }
 	Vec unit() const { return *this / len(); }
-	Vec min(const Vec &r) const { return Vec(std::min(x, r.x), std::min(y, r.y), std::min(z, r.z)); }
-	Vec min(float r) const { return Vec(std::min(x, r), std::min(y, r), std::min(z, r)); }
+	friend Vec min(const Vec &l, const Vec &r) { return Vec(std::fminf(l.x, r.x), std::fminf(l.y, r.y), std::fminf(l.z, r.z)); }
+	friend Vec min(const Vec &l, float r) { return Vec(std::fminf(l.x, r), std::fminf(l.y, r), std::fminf(l.z, r)); }
 	friend Vec expf(const Vec &r) { return Vec(std::expf(r.x), std::expf(r.y), std::expf(r.z)); }
 };
 typedef Vec Color;
