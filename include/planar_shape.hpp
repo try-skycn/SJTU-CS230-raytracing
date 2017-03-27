@@ -10,7 +10,7 @@ struct PlanarShape : Shape {
 
 	virtual Vec getNormal() const = 0;
 
-	Vec planarIntersect(const Ray &ray) const final {
+	Vec planarIntersect(const Ray &ray) const {
 		Vec D = getBasePoint() - ray.origin, N = getNormal();
 		return ray.move(D.dot(N) / ray.dir.dot(N));
 	}

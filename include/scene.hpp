@@ -27,7 +27,7 @@ struct Scene {
 		float dist = 0.0;
 		for (Object *object : objects) {
 			IntersectionResult intersectionResult = object->intersect(ray);
-			if (intersectionResult.hit && (!result.hit || intersectionResult.dist < dist)) {
+			if (intersectionResult.hit && (!result.hit || ray.origin.dist(intersectionResult.point) < dist)) {
 				result.hit = true;
 				result.object = object;
 				result.point = ray.move(dist);

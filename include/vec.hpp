@@ -103,11 +103,11 @@ struct Vec {
 		return *this / len();
 	}
 
-	float dist(const Vec &r) {
+	float dist(const Vec &r) const {
 		return (r - *this).len();
 	}
 
-	Vec toward(const Vec &r) {
+	Vec toward(const Vec &r) const {
 		return (r - *this).unit();
 	}
 

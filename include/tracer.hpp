@@ -35,9 +35,10 @@ struct Tracer {
 
 	Color resolveHit(Object *object, const Vec &point) {
 		if (Light *light = dynamic_cast<Light *>(object)) {
-			resolveHit(light, point);
+			return resolveHit(light, point);
 		} else {
 			assert(false);
+			return Color();
 		}
 	}
 

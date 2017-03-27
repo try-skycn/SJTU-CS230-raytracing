@@ -20,13 +20,13 @@ struct Camera {
 			dx(-up * delta), dy(sight.dir.cross(up) * delta) {
 	}
 
-	void see(Scene *scene, TraceConfig *config) const {
+	void see(Scene *scene, TraceConfig *config) {
 		Tracer *tracer = new Tracer(scene, config);
 		for (int i = 0; i < screen.height; ++i) {
 			for (int j = 0; j < screen.width; ++j) {
 				Vec screenPoint = center +
-						(-static_cast<float>(height) / 2.0 + 0.5 + static_cast<float>(i)) * dx +
-						(-static_cast<float>(width) / 2.0 + 0.5 + static_cast<float>(j)) * dy;
+						(-static_cast<float>(screen.height) / 2.0 + 0.5 + static_cast<float>(i)) * dx +
+						(-static_cast<float>(screen.width) / 2.0 + 0.5 + static_cast<float>(j)) * dy;
 				screen.store(i, j, tracer->trace(Ray(origin, screenPoint - origin)));
 			}
 		}

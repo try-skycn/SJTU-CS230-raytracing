@@ -29,7 +29,7 @@ struct Screen {
 
 	void print() const {
 		printf("P3\n");
-		printf("%d %d\n", height, width);
+		printf("%d %d\n", width, height);
 		printf("255\n");
 		for (int i = 0; i < height; ++i) {
 			for (int j = 0; j < width; ++j) {
