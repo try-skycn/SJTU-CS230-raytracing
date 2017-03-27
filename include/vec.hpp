@@ -115,5 +115,3 @@ struct Vec {
 		return Vec(std::expf(r.x), std::expf(r.y), std::expf(r.z));
 	}
 };
-
-typedef Vec Color;
