@@ -11,6 +11,6 @@ struct FinitePlanarShape : PlanarShape {
 
 	IntersectionResult intersect(const Ray &ray) const final {
 		Vec point = planarIntersect(ray);
-		return {.hit = inside(point), .point = point};
+		return {.hit = inside(point) && ray.isForward(point), .point = point};
 	}
 };

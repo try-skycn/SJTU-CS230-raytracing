@@ -18,4 +18,8 @@ struct Ray {
 	Vec move(float dist) const {
 		return origin + dir * dist;
 	}
+
+	bool isForward(const Vec &point) const {
+		return (point - origin).dot(dir) >= 0;
+	}
 };
