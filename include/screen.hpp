@@ -12,7 +12,9 @@ struct Screen {
 
 	// constructors
 
-	Screen(int _height, int _width): height(_height), width(_width), pixels(std::vector<std::vector<Color>>(_height, std::vector<Color>(_width))) {
+	Screen(int _height, int _width):
+			height(_height), width(_width),
+			pixels(std::vector<std::vector<Color>>(static_cast<unsigned long>(_height), std::vector<Color>(static_cast<unsigned long>(_width)))) {
 	}
 
 	// member methods
@@ -31,7 +33,7 @@ struct Screen {
 		printf("255\n");
 		for (int i = 0; i < height; ++i) {
 			for (int j = 0; j < width; ++j) {
-				Color color = min(get(i, j), 1.0) * 255.0;
+				Color color = fminf(get(i, j), 1.0) * 255.0;
 				printf("%d %d %d", int(color.x), int(color.y), int(color.z));
 				if (j + 1 == width) {
 					printf("\n");
