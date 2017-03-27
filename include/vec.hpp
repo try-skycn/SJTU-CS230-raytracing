@@ -87,7 +87,7 @@ struct Vec {
 		return x * r.x + y * r.y + z * r.z;
 	}
 
-	Vec corss(const Vec &r) const {
+	Vec cross(const Vec &r) const {
 		return Vec(y * r.z - z * r.y, z * r.x - x * r.z, x * r.y - y * r.x);
 	}
 

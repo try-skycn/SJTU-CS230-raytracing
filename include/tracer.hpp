@@ -11,23 +11,17 @@ struct Tracer {
 	// members
 
 	Scene *scene;
-	TraceConfig config;
+	TraceConfig *config;
 
 	// constructor
 
-	Tracer(Scene *_scene, const TraceConfig &_config): scene(_scene), config(_config) {
-	}
-
-	// entry
-
-	Color operator()(const Ray &ray) {
-		return trace(ray);
+	Tracer(Scene *_scene, TraceConfig *_config): scene(_scene), config(_config) {
 	}
 
 	// trace
 
 	Color trace(const Ray &ray) {
-		FirstHitResult firstHitResult = scene->first_hit(ray);
+		FirstHitResult firstHitResult = scene->firstHit(ray);
 		if (firstHitResult.hit) {
 			return resolveHit(firstHitResult.object, firstHitResult.point);
 		} else {

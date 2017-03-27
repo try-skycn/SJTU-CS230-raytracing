@@ -18,7 +18,11 @@ struct Scene {
 
 	// member methods
 
-	FirstHitResult first_hit(const Ray &ray) const {
+	void addObject(Object *object) {
+		objects.push_back(object);
+	}
+
+	FirstHitResult firstHit(const Ray &ray) const {
 		FirstHitResult result = {.hit = false};
 		float dist = 0.0;
 		for (Object *object : objects) {
