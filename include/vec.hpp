@@ -103,6 +103,10 @@ struct Vec {
 		return *this / len();
 	}
 
+	float sqrdist(const Vec &r) const {
+		return (r - *this).sqrlen();
+	}
+
 	float dist(const Vec &r) const {
 		return (r - *this).len();
 	}

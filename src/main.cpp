@@ -6,7 +6,8 @@
 #include "../include/color.hpp"
 
 void buildScene(Scene *scene) {
-	scene->addObject(new AreaLight(RectangleShape(Vec(5, 1, 0), Vec(5, 0, 0), Vec(5, 0, 1)), Color(1, 0, 1)));
+	scene->addObject(new AreaLight(RectangleShape(Vec(3, 1, -3), Vec(5, 0, 0), Vec(5, 0, 1)), Color(1, 1, 1)));
+	scene->addObject(new AreaLight(RectangleShape(Vec(3, 1.3, -3), Vec(5, 0.3, 0), Vec(5, 0.3, 1)), Color(1, 1, 1)));
 }
 
 int main() {

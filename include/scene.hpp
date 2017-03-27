@@ -30,7 +30,7 @@ struct Scene {
 			if (intersectionResult.hit && (!result.hit || ray.origin.dist(intersectionResult.point) < dist)) {
 				result.hit = true;
 				result.object = object;
-				result.point = ray.move(dist);
+				result.point = intersectionResult.point;
 			}
 		}
 		return result;

@@ -6,7 +6,7 @@
 #include "light.hpp"
 
 struct TraceConfig {
-
+	float light_decay_coeff = 8.0;
 };
 
 struct Tracer {
@@ -25,7 +25,7 @@ struct Tracer {
 	Color trace(const Ray &ray) {
 		FirstHitResult firstHitResult = scene->firstHit(ray);
 		if (firstHitResult.hit) {
-			return resolveHit(firstHitResult.object, firstHitResult.point);
+			return resolveHit(ray, firstHitResult.object, firstHitResult.point);
 		} else {
 			return Color();
 		}
@@ -33,16 +33,16 @@ struct Tracer {
 
 	// resolve hit
 
-	Color resolveHit(Object *object, const Vec &point) {
+	Color resolveHit(const Ray &ray, Object *object, const Vec &point) {
 		if (Light *light = dynamic_cast<Light *>(object)) {
-			return resolveHit(light, point);
+			return resolveHit(ray, light, point);
 		} else {
 			assert(false);
 			return Color();
 		}
 	}
 
-	Color resolveHit(Light *object, const Vec &point) {
-		return object->color;
+	Color resolveHit(const Ray &ray, Light *object, const Vec &point) {
+		return object->color / ray.origin.sqrdist(point) * config->light_decay_coeff;
 	}
 };
