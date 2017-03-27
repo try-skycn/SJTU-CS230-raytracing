@@ -3,11 +3,25 @@
 #include "vec.hpp"
 
 struct Screen {
+	// members
+
 	std::vector<std::vector<Color>> pixels;
 	int height, width;
-	Screen(int _height, int _width): height(_height), width(_width), pixels(std::vector<std::vector<Color>>(_height, std::vector<Color>(_width))) {}
-	Color get(int i, int j) const { return pixels[i][j]; }
-	void score(int i, int j, const Color &color) { pixels[i][j] = color; }
+
+	// constructors
+
+	Screen(int _height, int _width): height(_height), width(_width), pixels(std::vector<std::vector<Color>>(_height, std::vector<Color>(_width))) {
+	}
+
+	// member methods
+
+	Color get(int i, int j) const {
+		return pixels[i][j];
+	}
+
+	void store(int i, int j, const Color &color) {
+		pixels[i][j] = color;
+	}
 };
 
 void print(const Screen &screen) {
