@@ -9,15 +9,15 @@
 struct Camera {
 	// members
 
-	Screen screen;
 	Vec origin, center, dx, dy;
+	Screen screen;
 
 	// constructors
 
 	Camera(const Ray &sight, const Vec &up, float dist, int height, int width, float delta):
 			origin(sight.origin), center(sight.move(dist)),
-			screen(height, width),
-			dx(-up * delta), dy(sight.dir.cross(up) * delta) {
+			dx(-up * delta), dy(sight.dir.cross(up) * delta),
+			screen(height, width){
 	}
 
 	void see(Scene *scene, TraceConfig *config) {

@@ -3,6 +3,8 @@ project(raytracing)
 
 set(CMAKE_CXX_STANDARD 11)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")
+
 set(SOURCE_FILES
         include/color.hpp
         include/material.hpp

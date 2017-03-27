@@ -7,8 +7,8 @@
 struct Screen {
 	// members
 
-	std::vector<std::vector<Color>> pixels;
 	int height, width;
+	std::vector<std::vector<Color>> pixels;
 
 	// constructors
 
