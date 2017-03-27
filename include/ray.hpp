@@ -3,11 +3,17 @@
 struct Ray {
 	// members
 
-	Vec origin, direction;
+	Vec origin, dir;
 
 	// constructors
 
-	Ray(const Vec &_origin, const Vec &_direction): origin(_origin), direction(_direction.unit()) {
-		origin += EPS * direction;
+	Ray(const Vec &_origin, const Vec &_dir): origin(_origin), dir(_dir.unit()) {
+		origin += EPS * dir;
+	}
+
+	// member methods
+
+	Vec move(float dist) const {
+		return origin + dir * dist;
 	}
 };

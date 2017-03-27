@@ -2,13 +2,33 @@
 
 #include <vector>
 #include "vec.hpp"
+#include "object.hpp"
+#include "ray.hpp"
 
-struct Object {
-	static Vec get_reflected(const Vec &in_dir, const Vec &normal) { return (in_dir - 2.0 * in_dir.dot(normal) * normal).unit(); }
-	static Vec get_refracted(const Vec &in_dir, const Vec &normal, float in_index, float out_index) { assert(false); return Vec(); }
+struct FirstHitResult {
+	bool hit;
+	Object *object;
+	Vec point;
 };
 
 struct Scene {
-	vector<Object> objects;
+	// members
 
+	std::vector<Object *> objects;
+
+	// member methods
+
+	FirstHitResult first_hit(const Ray &ray) const {
+		FirstHitResult result = {.hit = false};
+		float dist = 0.0;
+		for (Object *object : objects) {
+			IntersectionResult intersectionResult = object->intersect(ray);
+			if (intersectionResult.hit && (!result.hit || intersectionResult.dist < dist)) {
+				result.hit = true;
+				result.object = object;
+				result.point = ray.move(dist);
+			}
+		}
+		return result;
+	}
 };
