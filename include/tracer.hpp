@@ -1,7 +1,9 @@
+#include <cassert>
 #include "vec.hpp"
 #include "color.hpp"
 #include "scene.hpp"
 #include "ray.hpp"
+#include "light.hpp"
 
 struct TraceConfig {
 
@@ -29,5 +31,17 @@ struct Tracer {
 		}
 	}
 
-	Color resolveHit(Object *object, const Vec &point);
+	// resolve hit
+
+	Color resolveHit(Object *object, const Vec &point) {
+		if (Light *light = dynamic_cast<Light *>(object)) {
+			resolveHit(light, point);
+		} else {
+			assert(false);
+		}
+	}
+
+	Color resolveHit(Light *object, const Vec &point) {
+		return object->color;
+	}
 };

@@ -103,11 +103,19 @@ struct Vec {
 		return *this / len();
 	}
 
-	friend Vec min(const Vec &l, const Vec &r) {
+	float dist(const Vec &r) {
+		return (r - *this).len();
+	}
+
+	Vec toward(const Vec &r) {
+		return (r - *this).unit();
+	}
+
+	friend Vec fminf(const Vec &l, const Vec &r) {
 		return Vec(std::fminf(l.x, r.x), std::fminf(l.y, r.y), std::fminf(l.z, r.z));
 	}
 
-	friend Vec min(const Vec &l, float r) {
+	friend Vec fminf(const Vec &l, float r) {
 		return Vec(std::fminf(l.x, r), std::fminf(l.y, r), std::fminf(l.z, r));
 	}
 
