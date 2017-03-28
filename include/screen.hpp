@@ -14,7 +14,7 @@ struct Screen {
 
 	Screen(int _height, int _width):
 			height(_height), width(_width),
-			pixels(std::vector<std::vector<Color>>(static_cast<unsigned long>(_height), std::vector<Color>(static_cast<unsigned long>(_width)))) {
+			pixels(static_cast<unsigned long>(_height), std::vector<Color>(static_cast<unsigned long>(_width))) {
 	}
 
 	// member methods
@@ -27,18 +27,18 @@ struct Screen {
 		pixels[i][j] = color;
 	}
 
-	void print() const {
-		printf("P3\n");
-		printf("%d %d\n", width, height);
-		printf("255\n");
+	void print(FILE *file) const {
+		fprintf(file, "P3\n");
+		fprintf(file, "%d %d\n", width, height);
+		fprintf(file, "255\n");
 		for (int i = 0; i < height; ++i) {
 			for (int j = 0; j < width; ++j) {
 				Color color = fminf(get(i, j), 1.0) * 255.0;
-				printf("%d %d %d", int(color.x), int(color.y), int(color.z));
+				fprintf(file, "%d %d %d", int(color.x), int(color.y), int(color.z));
 				if (j + 1 == width) {
-					printf("\n");
+					fprintf(file, "\n");
 				} else {
-					printf("  ");
+					fprintf(file, "  ");
 				}
 			}
 		}

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cassert>
 #include <cmath>
 #include "vec.hpp"
@@ -8,11 +10,7 @@
 #include "normal_object.hpp"
 #include "area_light.hpp"
 #include "spot_light.hpp"
-
-struct TraceConfig {
-	float lightDecayCoeff = 3.0;
-	int areaLightSamples = 500;
-};
+#include "traceconfig.hpp"
 
 struct Tracer {
 	// members

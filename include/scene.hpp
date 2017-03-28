@@ -18,6 +18,16 @@ struct Scene {
 	std::vector<Object *> objects;
 	std::vector<Light *> lights;
 
+	// constructors & destructor
+
+	~Scene() {
+		lights.clear();
+		for (Object *object : objects) {
+			delete(object);
+		}
+		objects.clear();
+	}
+
 	// member methods
 
 	void addObject(Object *object) {
