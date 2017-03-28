@@ -5,7 +5,7 @@
 
 struct IntersectionResult {
 	bool hit;
-	Vec point;
+	Vec hitPoint;
 };
 
 struct Shape {

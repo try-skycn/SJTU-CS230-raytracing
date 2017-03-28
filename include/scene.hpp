@@ -9,7 +9,7 @@
 struct FirstHitResult {
 	bool hit;
 	Object *object;
-	Vec point;
+	Vec hitPoint;
 };
 
 struct Scene {
@@ -28,18 +28,18 @@ struct Scene {
 	}
 
 	FirstHitResult firstHit(const Ray &ray) const {
-		FirstHitResult result = {.hit = false};
+		FirstHitResult firstHitResult = {.hit = false};
 		float dist = 0.0;
 		for (Object *object : objects) {
 			IntersectionResult intersectionResult = object->intersect(ray);
-			float newDist = ray.origin.dist(intersectionResult.point);
-			if (intersectionResult.hit && (!result.hit || newDist < dist)) {
-				result.hit = true;
-				result.object = object;
-				result.point = intersectionResult.point;
+			float newDist = ray.origin.dist(intersectionResult.hitPoint);
+			if (intersectionResult.hit && (!firstHitResult.hit || newDist < dist)) {
+				firstHitResult.hit = true;
+				firstHitResult.object = object;
+				firstHitResult.hitPoint = intersectionResult.hitPoint;
 				dist = newDist;
 			}
 		}
-		return result;
+		return firstHitResult;
 	}
 };

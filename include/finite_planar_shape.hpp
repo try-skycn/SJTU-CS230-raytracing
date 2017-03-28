@@ -10,7 +10,7 @@ struct FinitePlanarShape : PlanarShape {
 	virtual bool inside(const Vec &point) const = 0;
 
 	IntersectionResult intersect(const Ray &ray) const final {
-		Vec point = planarIntersect(ray);
-		return {.hit = inside(point) && ray.isForward(point), .point = point};
+		Vec hitPoint = planarIntersect(ray);
+		return {.hit = inside(hitPoint) && ray.isForward(hitPoint), .hitPoint = hitPoint};
 	}
 };

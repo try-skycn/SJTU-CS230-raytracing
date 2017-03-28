@@ -6,6 +6,7 @@
 #include "light.hpp"
 #include "normal_object.hpp"
 #include "area_light.hpp"
+#include "spot_light.hpp"
 
 struct TraceConfig {
 	float light_decay_coeff = 3.0;
@@ -28,7 +29,7 @@ struct Tracer {
 	Color trace(const Ray &ray) {
 		FirstHitResult firstHitResult = scene->firstHit(ray);
 		if (firstHitResult.hit) {
-			return resolveHit(ray, firstHitResult.object, firstHitResult.point);
+			return resolveHit(ray, firstHitResult.object, firstHitResult.hitPoint);
 		} else {
 			return Color();
 		}
@@ -71,6 +72,8 @@ struct Tracer {
 	Color resolveShading(NormalObject *normalObject, Light *light, const Vec &point) {
 		if (AreaLight *areaLight = dynamic_cast<AreaLight *>(light)) {
 			return resolveShading(normalObject, areaLight, point);
+		} else if (SpotLight *spotLight = dynamic_cast<SpotLight *>(light)) {
+			return resolveShading(normalObject, spotLight, point);
 		} else {
 			assert(false);
 			return Color();
@@ -85,10 +88,20 @@ struct Tracer {
 				Ray tmpRay(point, iterator.get(i, j) - point);
 				FirstHitResult firstHitResult = scene->firstHit(tmpRay);
 				if (firstHitResult.hit && firstHitResult.object == areaLight) {
-					result += resolveHit(tmpRay, static_cast<Light *>(areaLight), firstHitResult.point);
+					result += resolveHit(tmpRay, static_cast<Light *>(areaLight), firstHitResult.hitPoint);
 				}
 			}
 		}
 		return result / (static_cast<float>(config->divHeight) * static_cast<float>(config->divWidth));
+	}
+
+	Color resolveShading(NormalObject *normalObject, SpotLight *spotLight, const Vec &point) {
+		Ray tmpRay(point, spotLight->spot - point);
+		FirstHitResult firstHitResult = scene->firstHit(tmpRay);
+		if (firstHitResult.hit && firstHitResult.object == spotLight) {
+			return resolveHit(tmpRay, static_cast<Light *>(spotLight), firstHitResult.hitPoint);
+		} else {
+			return Color(0, 0, 0);
+		}
 	}
 };
