@@ -48,8 +48,8 @@ struct Tracer {
 	}
 
 	Color resolveHit(const Ray &ray, Light *light, const Vec &point) {
-//		return light->color / ray.origin.dist(point) * config->lightDecayCoeff;
-		return light->color;
+		return light->color / ray.origin.dist(point) * config->lightDecayCoeff;
+//		return light->color;
 	}
 
 	Color resolveHit(const Ray &ray, NormalObject *normalObject, const Vec &point) {
@@ -89,8 +89,9 @@ struct Tracer {
 						normalObject->getNormal(hitPoint).dot(tmpRay.dir) * normalObject->material.color;
 			}
 			if (normalObject->material.kSpecularShading > 0) {
+				float dot = normalObject->reflect(ray.dir, hitPoint).dot(tmpRay.dir);
 				result += color * normalObject->material.kSpecularShading *
-						powf(normalObject->reflect(ray.dir, hitPoint).dot(tmpRay.dir), 20);
+						powf(std::fmaxf(dot, 0.0f), 20);
 			}
 			return result;
 		} else {

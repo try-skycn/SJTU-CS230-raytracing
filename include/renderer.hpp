@@ -110,10 +110,16 @@ struct Renderer {
 
 Scene *buildScene() {
 	Scene *scene = new Scene;
+//	scene->addObject(
+//			new AreaLight(
+//					RectangleShape(Vec(10, 2, -2), Vec(5, 2, -2), Vec(5, 2, 2)),
+//					Color(1, 1, 1)
+//			)
+//	);
 	scene->addObject(
-			new AreaLight(
-					RectangleShape(Vec(10, 2, -2), Vec(5, 2, -2), Vec(5, 2, 2)),
-					Color(1, 1, 1)
+			new SpotLight(
+					Vec(1.5f, 1, 1),
+			        Color(1, 1, 1)
 			)
 	);
 //	scene->addObject(
@@ -140,9 +146,49 @@ Scene *buildScene() {
 			new GeometryObject(
 					new PlaneShape(Vec(0, -1, 0), Vec(0, 1, 0)),
 					Material{
+							.color = Color(1, 1, 1),
+							.kDiffuseShading = 0.2f,
+							.kSpecularShading = 0.8f
+					}
+			)
+	);
+	scene->addObject(
+			new GeometryObject(
+					new PlaneShape(Vec(0, 0, -2), Vec(0, 0, 1)),
+					Material{
 							.color = Color(0, 0, 1),
-							.kDiffuseShading = 0.0f,
-							.kSpecularShading = 1.0f
+							.kDiffuseShading = 0.2f,
+							.kSpecularShading = 0.8f
+					}
+			)
+	);
+	scene->addObject(
+			new GeometryObject(
+					new PlaneShape(Vec(0, 0, 2), Vec(0, 0, -1)),
+					Material{
+							.color = Color(1, 1, 0),
+							.kDiffuseShading = 0.2f,
+							.kSpecularShading = 0.8f
+					}
+			)
+	);
+	scene->addObject(
+			new GeometryObject(
+					new PlaneShape(Vec(0, 4, 0), Vec(0, -1, 0)),
+					Material{
+							.color = Color(1, 0, 1),
+							.kDiffuseShading = 0.2f,
+							.kSpecularShading = 0.8f
+					}
+			)
+	);
+	scene->addObject(
+			new GeometryObject(
+					new PlaneShape(Vec(5, 0, 0), Vec(-1, 0, 0)),
+					Material{
+							.color = Color(0, 1, 0),
+							.kDiffuseShading = 0.2f,
+							.kSpecularShading = 0.8f
 					}
 			)
 	);
