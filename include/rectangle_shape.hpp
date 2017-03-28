@@ -1,5 +1,6 @@
 #pragma once
 
+#include "resources.hpp"
 #include "finite_planar_shape.hpp"
 
 struct RectangleIterator {
@@ -41,5 +42,9 @@ struct RectangleShape : FinitePlanarShape {
 	RectangleIterator getIterator(int divHeight, int divWidth) const {
 		Vec dx = - height / static_cast<float>(divHeight), dy = width / static_cast<float>(divWidth);
 		return {.start = start + height - dx / 2.0 + dy / 2.0, .dx = dx, .dy = dy};
+	}
+
+	Vec sample() const {
+		return start + randf() * height + randf() * width;
 	}
 };

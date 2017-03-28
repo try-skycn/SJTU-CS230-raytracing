@@ -4,4 +4,6 @@
 
 struct Material {
 	Color color;
+	float kDiffuseShading;
+	float kSpecularShading;
 };
