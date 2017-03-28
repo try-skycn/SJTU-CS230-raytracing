@@ -25,7 +25,8 @@ struct SpotLight : Light {
 	}
 
 	IntersectionResult intersect(const Ray &ray) const {
-		if (ray.move((spot - ray.origin).dot(ray.dir)).dist(spot) < radius) {
+		Vec P = ray.move((spot - ray.origin).dot(ray.dir));
+		if (ray.isForward(P) && P.dist(spot) < radius) {
 			return IntersectionResult{.hit = true, .hitPoint = spot};
 		} else {
 			return IntersectionResult{.hit = false};

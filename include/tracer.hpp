@@ -25,10 +25,13 @@ struct Tracer {
 
 	// trace
 
-	Color trace(const Ray &ray) {
+	Color trace(const Ray &ray, int depth=5) const {
+		if (depth == 0) {
+			return Color();
+		}
 		FirstHitResult firstHitResult = scene->firstHit(ray);
 		if (firstHitResult.hit) {
-			return resolveHit(ray, firstHitResult.object, firstHitResult.hitPoint);
+			return resolveHit(ray, firstHitResult.object, firstHitResult.hitPoint, depth);
 		} else {
 			return Color();
 		}
@@ -36,38 +39,42 @@ struct Tracer {
 
 	// resolve hit
 
-	Color resolveHit(const Ray &ray, Object *object, const Vec &point) {
+	Color resolveHit(const Ray &ray, Object *object, const Vec &point, int depth) const {
 		if (Light *light = dynamic_cast<Light *>(object)) {
-			return resolveHit(ray, light, point);
+			return resolveHit(ray, light, point, depth);
 		} else if (NormalObject *normalObject = dynamic_cast<NormalObject *>(object)) {
-			return resolveHit(ray, normalObject, point);
+			return resolveHit(ray, normalObject, point, depth);
 		} else {
 			assert(false);
 			return Color();
 		}
 	}
 
-	Color resolveHit(const Ray &ray, Light *light, const Vec &hitPoint) {
+	Color resolveHit(const Ray &ray, Light *light, const Vec &hitPoint, int depth) const {
 		return light->getLightStrength(ray, hitPoint, config->lightDecayCoeff);
 	}
 
-	Color resolveHit(const Ray &ray, NormalObject *normalObject, const Vec &point) {
-		return shading(ray, normalObject, point);
+	Color resolveHit(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, int depth) const {
+		return shading(ray, normalObject, hitPoint) + reflection(ray, normalObject, hitPoint, depth);
 	}
 
 	// shading
 
-	Color shading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint) {
-		Color result;
-		for (Light *light : scene->lights) {
-			result += resolveShading(ray, normalObject, hitPoint, light);
+	Color shading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint) const {
+		if (normalObject->material.kShading > 0) {
+			Color result;
+			for (Light *light : scene->lights) {
+				result += resolveShading(ray, normalObject, hitPoint, light);
+			}
+			return result * normalObject->material.kShading;
+		} else {
+			return Color();
 		}
-		return result;
 	}
 
 	// resolve shading
 
-	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, Light *light) {
+	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, Light *light) const {
 		if (AreaLight *areaLight = dynamic_cast<AreaLight *>(light)) {
 			return resolveShading(ray, normalObject, hitPoint, areaLight);
 		} else if (SpotLight *spotLight = dynamic_cast<SpotLight *>(light)) {
@@ -78,7 +85,7 @@ struct Tracer {
 		}
 	}
 
-	Color resolveSpotShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, Light *light, const Vec &spot) {
+	Color resolveSpotShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, Light *light, const Vec &spot) const {
 		Ray tmpRay(hitPoint, spot - hitPoint);
 		if (tmpRay.dir.dot(normalObject->getNormal(hitPoint)) < 0) {
 			return Color();
@@ -101,7 +108,7 @@ struct Tracer {
 		}
 	}
 
-	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, AreaLight *areaLight) {
+	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, AreaLight *areaLight) const {
 		Color result;
 		for (int i = 0; i < config->areaLightSamples; ++i) {
 			result += resolveSpotShading(ray, normalObject, hitPoint, static_cast<Light *>(areaLight),
@@ -110,7 +117,17 @@ struct Tracer {
 		return result / static_cast<float>(config->areaLightSamples);
 	}
 
-	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, SpotLight *spotLight) {
+	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, SpotLight *spotLight) const {
 		return resolveSpotShading(ray, normalObject, hitPoint, static_cast<Light *>(spotLight), spotLight->getCenter());
+	}
+
+	// reflection
+
+	Color reflection(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, int depth) const {
+		if (normalObject->material.kReflection > 0) {
+			return trace(Ray(hitPoint, normalObject->reflect(ray.dir, hitPoint)), depth - 1) * normalObject->material.kReflection;
+		} else {
+			return Color();
+		}
 	}
 };
