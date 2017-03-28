@@ -10,8 +10,22 @@ struct PlanarShape : Shape {
 
 	virtual Vec getNormal() const = 0;
 
-	Vec planarIntersect(const Ray &ray) const {
+	Vec getNormal(const Vec &hitPoint) const {
+		return getNormal();
+	}
+
+	IntersectionResult planarIntersect(const Ray &ray) const {
 		Vec D = getBasePoint() - ray.origin, N = getNormal();
-		return ray.move(D.dot(N) / ray.dir.dot(N));
+		float dot = ray.dir.dot(N);
+		if (-EPS < dot && dot < EPS) {
+			return {.hit = false};
+		} else {
+			Vec hitPoint = ray.move(D.dot(N) / dot);
+			if (ray.isForward(hitPoint)) {
+				return {.hit = true, .hitPoint = hitPoint};
+			} else {
+				return {.hit = false};
+			}
+		}
 	}
 };

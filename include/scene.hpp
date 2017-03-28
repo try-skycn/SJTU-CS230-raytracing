@@ -5,6 +5,7 @@
 #include "object.hpp"
 #include "ray.hpp"
 #include "light.hpp"
+#include "normal_object.hpp"
 
 struct FirstHitResult {
 	bool hit;

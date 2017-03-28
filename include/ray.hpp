@@ -19,7 +19,7 @@ struct Ray {
 		return origin + dir * dist;
 	}
 
-	bool isForward(const Vec &point) const {
-		return (point - origin).dot(dir) >= 0;
+	bool isForward(const Vec &hitPoint) const {
+		return (hitPoint - origin).dot(dir) >= 0;
 	}
 };
