@@ -2,6 +2,14 @@
 
 #include "finite_planar_shape.hpp"
 
+struct RectangleIterator {
+	Vec start, dx, dy;
+
+	Vec get(int i, int j) {
+		return start + i * dx + j * dy;
+	}
+};
+
 struct RectangleShape : FinitePlanarShape {
 	// members
 
@@ -28,5 +36,10 @@ struct RectangleShape : FinitePlanarShape {
 				D.cross(height).dot(N) >= 0 &&
 				height.cross(ND).dot(N) >= 0 &&
 				ND.cross(width).dot(N) >= 0;
+	}
+
+	RectangleIterator getIterator(int divHeight, int divWidth) const {
+		Vec dx = - height / static_cast<float>(divHeight), dy = width / static_cast<float>(divWidth);
+		return {.start = start + height - dx / 2.0 + dy / 2.0, .dx = dx, .dy = dy};
 	}
 };

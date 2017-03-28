@@ -5,29 +5,29 @@
 #include "screen.hpp"
 #include "scene.hpp"
 #include "tracer.hpp"
+#include "rectangle_shape.hpp"
 
 struct Camera {
 	// members
 
-	Vec origin, center, dx, dy;
-	Screen screen;
+	Vec origin;
+	RectangleShape rectangle;
 
 	// constructors
 
-	Camera(const Ray &sight, const Vec &up, float dist, int height, int width, float delta):
-			origin(sight.origin), center(sight.move(dist)),
-			dx(-up * delta), dy(sight.dir.cross(up) * delta),
-			screen(height, width){
+	Camera(const Ray &sight, const Vec &up, float dist, float height, float width):
+			origin(sight.origin),
+			rectangle(sight.move(dist) + (height * 0.5f) * up - (width * 0.5f) * sight.dir.cross(up),
+			          sight.move(dist) - (height * 0.5f) * up - (width * 0.5f) * sight.dir.cross(up),
+			          sight.move(dist) - (height * 0.5f) * up + (width * 0.5f) * sight.dir.cross(up)) {
 	}
 
-	void see(Scene *scene, TraceConfig *config) {
+	void see(Screen *screen, Scene *scene, TraceConfig *config) {
+		RectangleIterator iterator = rectangle.getIterator(screen->height, screen->width);
 		Tracer *tracer = new Tracer(scene, config);
-		for (int i = 0; i < screen.height; ++i) {
-			for (int j = 0; j < screen.width; ++j) {
-				Vec screenPoint = center +
-						(-static_cast<float>(screen.height) / 2.0 + 0.5 + static_cast<float>(i)) * dx +
-						(-static_cast<float>(screen.width) / 2.0 + 0.5 + static_cast<float>(j)) * dy;
-				screen.store(i, j, tracer->trace(Ray(origin, screenPoint - origin)));
+		for (int i = 0; i < screen->height; ++i) {
+			for (int j = 0; j < screen->width; ++j) {
+				screen->store(i, j, tracer->trace(Ray(origin, iterator.get(i, j) - origin)));
 			}
 		}
 	}
