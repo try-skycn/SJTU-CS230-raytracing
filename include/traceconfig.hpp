@@ -1,7 +1,7 @@
 #pragma once
 
 struct TraceConfig {
-	float lightDecayCoeff = 5.0;
-	int areaLightSamples = 10;
-	int numWorkers = 8;
+	float lightDecayCoeff = 2.0;
+	int areaLightSamples = 50;
+	int numWorkers = 16;
 };

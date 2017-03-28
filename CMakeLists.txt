@@ -25,6 +25,7 @@ set(SOURCE_FILES
         include/scene.hpp
         include/screen.hpp
         include/shape.hpp
+        include/sphere_shape.hpp
         include/spot_light.hpp
         include/traceconfig.hpp
         include/tracer.hpp

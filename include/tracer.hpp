@@ -47,9 +47,8 @@ struct Tracer {
 		}
 	}
 
-	Color resolveHit(const Ray &ray, Light *light, const Vec &point) {
-		return light->color / ray.origin.dist(point) * config->lightDecayCoeff;
-//		return light->color;
+	Color resolveHit(const Ray &ray, Light *light, const Vec &hitPoint) {
+		return light->getLightStrength(ray, hitPoint, config->lightDecayCoeff);
 	}
 
 	Color resolveHit(const Ray &ray, NormalObject *normalObject, const Vec &point) {
@@ -81,9 +80,12 @@ struct Tracer {
 
 	Color resolveSpotShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, Light *light, const Vec &spot) {
 		Ray tmpRay(hitPoint, spot - hitPoint);
+		if (tmpRay.dir.dot(normalObject->getNormal(hitPoint)) < 0) {
+			return Color();
+		}
 		FirstHitResult firstHitResult = scene->firstHit(tmpRay);
 		if (firstHitResult.hit && firstHitResult.object == light) {
-			Color color = resolveHit(tmpRay, light, firstHitResult.hitPoint), result;
+			Color color = light->getLightStrength(tmpRay, firstHitResult.hitPoint, config->lightDecayCoeff), result;
 			if (normalObject->material.kDiffuseShading > 0) {
 				result += color * normalObject->material.kDiffuseShading *
 						normalObject->getNormal(hitPoint).dot(tmpRay.dir) * normalObject->material.color;
@@ -109,7 +111,6 @@ struct Tracer {
 	}
 
 	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, SpotLight *spotLight) {
-		return resolveSpotShading(ray, normalObject, hitPoint, static_cast<Light *>(spotLight),
-		                          spotLight->spot);
+		return resolveSpotShading(ray, normalObject, hitPoint, static_cast<Light *>(spotLight), spotLight->getCenter());
 	}
 };

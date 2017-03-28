@@ -5,6 +5,7 @@
 struct SpotLight : Light {
 	// members
 
+	static float radius, boundry;
 	Vec spot;
 
 	// constructors
@@ -14,11 +15,23 @@ struct SpotLight : Light {
 
 	// member methods
 
+	Vec getCenter() const {
+		return spot;
+	}
+
+	virtual Color getLightStrength(const Ray &ray, const Vec &hitPoint, float lightDecayCoeff) const {
+		float h = ray.move((spot - ray.origin).dot(ray.dir)).dist(spot);
+		return getColor(ray, hitPoint, lightDecayCoeff) * (1.0f - h * boundry / radius);
+	}
+
 	IntersectionResult intersect(const Ray &ray) const {
-		if (ray.move((spot - ray.origin).dot(ray.dir)).dist(spot) < 0.01) {
+		if (ray.move((spot - ray.origin).dot(ray.dir)).dist(spot) < radius) {
 			return IntersectionResult{.hit = true, .hitPoint = spot};
 		} else {
 			return IntersectionResult{.hit = false};
 		}
 	}
 };
+
+float SpotLight::radius = 0.01;
+float SpotLight::boundry = 0.95;

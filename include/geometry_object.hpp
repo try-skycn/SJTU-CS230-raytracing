@@ -19,8 +19,8 @@ struct GeometryObject : NormalObject {
 
 	// member methods
 
-	Vec getNormal(const Vec &point) const final {
-		return shape->getNormal(point);
+	Vec getNormal(const Vec &hitPoint) const final {
+		return shape->getNormal(hitPoint);
 	}
 
 	IntersectionResult intersect(const Ray &ray) const final {

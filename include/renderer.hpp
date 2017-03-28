@@ -15,6 +15,7 @@
 #include "tracer.hpp"
 #include "geometry_object.hpp"
 #include "plane_shape.hpp"
+#include "sphere_shape.hpp"
 #include "camera.hpp"
 #include "traceconfig.hpp"
 
@@ -112,39 +113,26 @@ Scene *buildScene() {
 	Scene *scene = new Scene;
 //	scene->addObject(
 //			new AreaLight(
-//					RectangleShape(Vec(10, 2, -2), Vec(5, 2, -2), Vec(5, 2, 2)),
+//					RectangleShape(Vec(4, 2, -2), Vec(2, 2, -2), Vec(2, 2, 2)),
 //					Color(1, 1, 1)
 //			)
 //	);
 	scene->addObject(
 			new SpotLight(
-					Vec(1.5f, 1, 1),
+					Vec(1, 1, 0),
 			        Color(1, 1, 1)
 			)
 	);
-//	scene->addObject(
-//			new GeometryObject(
-//					new RectangleShape(Vec(5, -2, -2), Vec(3, -2, -2), Vec(3, -2, 2)),
-//					Material{
-//							.color = Color(1, 1, 1),
-//							.kDiffuseShading = 0.2,
-//							.kSpecularShading = 0.8
-//					}
-//			)
-//	);
-//	scene->addObject(
-//			new GeometryObject(
-//					new RectangleShape(Vec(4.3f, -1.5f, -0.3f), Vec(3.7f, -1.5f, -0.3f), Vec(3.7f, -1.5f, 0.3f)),
-//					Material{
-//							.color = Color(0, 0, 1),
-//							.kDiffuseShading = 0.2,
-//							.kSpecularShading = 0.8
-//					}
-//			)
-//	);
+	scene->addObject(
+			new SpotLight(
+					Vec(2, 1, 1),
+					Color(1, 1, 1)
+			)
+	);
+	// bottom
 	scene->addObject(
 			new GeometryObject(
-					new PlaneShape(Vec(0, -1, 0), Vec(0, 1, 0)),
+					new PlaneShape(Vec(0, 0, 0), Vec(0, 1, 0)),
 					Material{
 							.color = Color(1, 1, 1),
 							.kDiffuseShading = 0.2f,
@@ -152,43 +140,58 @@ Scene *buildScene() {
 					}
 			)
 	);
+	// left
 	scene->addObject(
 			new GeometryObject(
 					new PlaneShape(Vec(0, 0, -2), Vec(0, 0, 1)),
 					Material{
 							.color = Color(0, 0, 1),
-							.kDiffuseShading = 0.2f,
-							.kSpecularShading = 0.8f
+							.kDiffuseShading = 0.5f,
+							.kSpecularShading = 0.5f
 					}
 			)
 	);
+	// right
 	scene->addObject(
 			new GeometryObject(
 					new PlaneShape(Vec(0, 0, 2), Vec(0, 0, -1)),
 					Material{
 							.color = Color(1, 1, 0),
-							.kDiffuseShading = 0.2f,
-							.kSpecularShading = 0.8f
+							.kDiffuseShading = 0.5f,
+							.kSpecularShading = 0.5f
 					}
 			)
 	);
+	// top
 	scene->addObject(
 			new GeometryObject(
 					new PlaneShape(Vec(0, 4, 0), Vec(0, -1, 0)),
 					Material{
 							.color = Color(1, 0, 1),
-							.kDiffuseShading = 0.2f,
-							.kSpecularShading = 0.8f
+							.kDiffuseShading = 0.5f,
+							.kSpecularShading = 0.5f
 					}
 			)
 	);
+	// front
 	scene->addObject(
 			new GeometryObject(
 					new PlaneShape(Vec(5, 0, 0), Vec(-1, 0, 0)),
 					Material{
 							.color = Color(0, 1, 0),
-							.kDiffuseShading = 0.2f,
-							.kSpecularShading = 0.8f
+							.kDiffuseShading = 1.0f,
+							.kSpecularShading = 0.0f
+					}
+			)
+	);
+	// ball
+	scene->addObject(
+			new GeometryObject(
+					new SphereShape(Vec(2, 0.5f, -1.0f), 0.5f),
+					Material{
+							.color = Color(0, 1, 0),
+							.kDiffuseShading = 0.5f,
+							.kSpecularShading = 0.5f
 					}
 			)
 	);
