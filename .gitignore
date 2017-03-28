@@ -31,5 +31,8 @@
 # CLion
 .idea/
 
+# CMake
+cmake-build-debug/
+
 # Outputs
 *.ppm
