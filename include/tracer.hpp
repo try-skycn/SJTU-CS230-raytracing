@@ -15,135 +15,121 @@
 struct Tracer {
 	// members
 
-	Scene *scene;
-	TraceConfig *config;
+	const Scene &scene;
+	const TraceConfig &config;
+	const Ray &ray;
+	const int depth;
+
+	Vec H, N, R, F; // hit point & normal vector & reflection vector & refraction vector
+	bool survive; // survive refraction
 
 	// constructor
 
-	Tracer(Scene *_scene, TraceConfig *_config): scene(_scene), config(_config) {
+	Tracer(const Scene &_scene, const TraceConfig &_config, const Ray &_ray, int _depth = 5):
+			scene(_scene), config(_config), ray(_ray), depth(_depth) {
+	}
+
+	Tracer(const Tracer &parent, const Ray &_ray, int _depth):
+			scene(parent.scene), config(parent.config), ray(_ray), depth(_depth) {
+	}
+
+	Tracer(const Tracer &parent, const Ray &_ray):
+			scene(parent.scene), config(parent.config), ray(_ray), depth(parent.depth - 1) {
 	}
 
 	// trace
 
-	Color trace(const Ray &ray, int depth=5) const {
-		if (depth == 0) {
-			return Color();
-		}
-		FirstHitResult firstHitResult = scene->firstHit(ray);
+	Color trace(FirstHitResult defaultHit = {.hit = false}) {
+		if (depth == 0) return Color();
+		FirstHitResult firstHitResult = scene.firstHit(ray, defaultHit);
 		if (firstHitResult.hit) {
-			return resolveHit(ray, firstHitResult.object, firstHitResult.hitPoint, depth);
-		} else {
-			return Color();
+			H = firstHitResult.hitPoint;
+			return lightDecay(resolveHit(firstHitResult.object), firstHitResult.dist);
 		}
+		return Color();
+	}
+
+	// light decay
+
+	Color lightDecay(const Color &color, float dist) const {
+		return color;
 	}
 
 	// resolve hit
 
-	Color resolveHit(const Ray &ray, Object *object, const Vec &point, int depth) const {
+	Color resolveHit(Object *object) {
 		if (Light *light = dynamic_cast<Light *>(object)) {
-			return resolveHit(ray, light, point, depth);
+			return light->color;
 		} else if (NormalObject *normalObject = dynamic_cast<NormalObject *>(object)) {
-			return resolveHit(ray, normalObject, point, depth);
-		} else {
-			assert(false);
-			return Color();
-		}
-	}
-
-	Color resolveHit(const Ray &ray, Light *light, const Vec &hitPoint, int depth) const {
-		return light->getLightStrength(ray, hitPoint, config->lightDecayCoeff);
-	}
-
-	Color resolveHit(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, int depth) const {
-		return shading(ray, normalObject, hitPoint) +
-				reflection(ray, normalObject, hitPoint, depth) +
-				refraction(ray, normalObject, hitPoint, depth);
+			if (depth > 1) {
+				N = normalObject->getNormal(H);
+				R = NormalObject::reflect(ray.dir, N);
+				return shading(normalObject->material) +
+				       reflection(normalObject->material) +
+				       refraction(normalObject->material);
+			}
+		} else assert(false);
+		return Color();
 	}
 
 	// shading
 
-	Color shading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint) const {
-		if (normalObject->material.kShading > 0) {
+	Color shading(const Material &material) const {
+		if (material.kShading > 0) {
 			Color result;
-			for (Light *light : scene->lights) {
-				result += resolveShading(ray, normalObject, hitPoint, light);
+			for (Light *light : scene.lights) {
+				if (AreaLight *areaLight = dynamic_cast<AreaLight *>(light)) {
+					result += resolveShading(material, areaLight);
+				} else if (SpotLight *spotLight = dynamic_cast<SpotLight *>(light)) {
+					result += resolveShading(material, spotLight);
+				} else assert(false);
 			}
-			return result * normalObject->material.kShading;
-		} else {
-			return Color();
+			return result * material.kShading;
 		}
+		return Color();
 	}
 
 	// resolve shading
 
-	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, Light *light) const {
-		if (AreaLight *areaLight = dynamic_cast<AreaLight *>(light)) {
-			return resolveShading(ray, normalObject, hitPoint, areaLight);
-		} else if (SpotLight *spotLight = dynamic_cast<SpotLight *>(light)) {
-			return resolveShading(ray, normalObject, hitPoint, spotLight);
-		} else {
-			assert(false);
-			return Color();
-		}
-	}
-
-	Color resolveSpotShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, Light *light, const Vec &spot) const {
-		Ray tmpRay(hitPoint, spot - hitPoint);
-		if (tmpRay.dir.dot(normalObject->getNormal(hitPoint)) < 0) {
-			return Color();
-		}
-		FirstHitResult firstHitResult = scene->firstHit(tmpRay);
-		if (firstHitResult.hit && firstHitResult.object == light) {
-			Color color = light->getLightStrength(tmpRay, firstHitResult.hitPoint, config->lightDecayCoeff), result;
-			if (normalObject->material.kDiffuseShading > 0) {
-				result += color * normalObject->material.kDiffuseShading *
-						normalObject->getNormal(hitPoint).dot(tmpRay.dir) * normalObject->material.color;
-			}
-			if (normalObject->material.kSpecularShading > 0) {
-				float dot = normalObject->reflect(ray.dir, hitPoint).dot(tmpRay.dir);
-				result += color * normalObject->material.kSpecularShading *
-						powf(std::fmaxf(dot, 0.0f), 20);
-			}
-			return result;
-		} else {
-			return Color(0, 0, 0);
-		}
-	}
-
-	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, AreaLight *areaLight) const {
+	Color resolveShading(const Material &material, AreaLight *areaLight) const {
 		Color result;
 		for (const Vec &sample : areaLight->samples) {
-			result += resolveSpotShading(ray, normalObject, hitPoint, static_cast<Light *>(areaLight), sample);
+			result += resolveSpotShading(material, static_cast<Light *>(areaLight), sample);
 		}
 		return result / static_cast<float>(areaLight->samples.size());
 	}
 
-	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, SpotLight *spotLight) const {
-		return resolveSpotShading(ray, normalObject, hitPoint, static_cast<Light *>(spotLight), spotLight->getCenter());
+	Color resolveShading(const Material &material, SpotLight *spotLight) const {
+		return resolveSpotShading(material, static_cast<Light *>(spotLight), spotLight->getCenter());
 	}
 
 	// reflection
 
-	Color reflection(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, int depth) const {
-		if (normalObject->material.kReflection > 0) {
-			return trace(Ray(hitPoint, normalObject->reflect(ray.dir, hitPoint)), depth - 1) * normalObject->material.kReflection;
-		} else {
-			return Color();
-		}
+	Color reflection(const Material &material) const {
+		if (material.kReflection > 0) return Tracer(*this, Ray(H, R)).trace() * material.kReflection;
+		return Color();
 	}
 
 	// refraction
 
-	Color refraction(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, int depth) const {
-		if (normalObject->material.kRefraction > 0) {
-			RefractResult refractResult = normalObject->refract(ray.dir, hitPoint);
-			if (refractResult.survive) {
-				return trace(Ray(hitPoint, refractResult.dir), depth - 1) * normalObject->material.kRefraction;
-			} else {
-				return Color();
-			}
-		} else {
-			return Color();
+	Color refraction(const Material &material) const {
+		if (material.kRefraction > 0) {
+			RefractResult refractResult = NormalObject::refract(ray.dir, N, material.index);
+			if (refractResult.survive) return Tracer(*this, Ray(H, refractResult.dir)).trace() * material.kRefraction;
 		}
+		return Color();
+	}
+
+	// resolve shading color
+
+	Color resolveSpotShading(const Material &material, Light *light, const Vec &spot) const {
+		Ray tmpRay(H, spot - H);
+		if (tmpRay.dir.dot(N) > 0) {
+			return (
+					       material.kDiffuseShading * material.color * N.dot(tmpRay.dir) +
+					       material.kSpecularShading * std::powf(std::fmaxf(R.dot(tmpRay.dir), 0.0f), 20.0)
+			       ) * Tracer(*this, tmpRay, std::min(depth - 1, 1)).trace({.hit = true, .object = light, .hitPoint = spot, .dist = tmpRay.origin.dist(spot)});
+		}
+		return Color();
 	}
 };

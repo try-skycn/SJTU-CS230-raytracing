@@ -26,9 +26,7 @@ struct Camera {
 		iterator = rectangle.getIterator(screen.height, screen.width);
 	}
 
-	void see(int i, int j, Scene *scene, TraceConfig *config) {
-		Tracer *tracer = new Tracer(scene, config);
-		screen.store(i, j, tracer->trace(Ray(origin, iterator.get(i, j) - origin)));
-		delete(tracer);
+	void see(int i, int j, const Scene &scene, const TraceConfig &config) {
+		screen.store(i, j, Tracer(scene, config, Ray(origin, iterator.get(i, j) - origin)).trace());
 	}
 };

@@ -22,29 +22,30 @@ struct NormalObject : Object {
 
 	virtual Vec getNormal(const Vec &hitPoint) const = 0;
 
-	Vec reflect(const Vec &inDir, const Vec &hitPoint) const {
-		Vec normal = getNormal(hitPoint);
-		return (inDir - 2.0 * inDir.dot(normal) * normal).unit();
-	}
+	// static member methods
 
-	RefractResult refract(const Vec &inDir, const Vec &hitPoint) const {
-		Vec N = getNormal(hitPoint);
-		float dot = inDir.dot(N);
-		Vec L = (inDir - dot * N).unit();
-		float inSin = inDir.dot(L), outSin;
+	static RefractResult refract(const Vec &I, const Vec &N, float index) {
+		float dot = I.dot(N);
+		Vec L = (I - dot * N).unit(), NN = N;
+		float inSin = I.dot(L), outSin;
 		if (dot <= 0) {
 			// positive
-			outSin = inSin / material.index;
-			N = -N;
+			outSin = inSin / index;
+			NN = -N;
 		} else {
 			// negative
-			outSin = inSin * material.index;
+			outSin = inSin * index;
 		}
 		if (outSin < 1) {
 			float outCos = std::sqrtf(1.0f - outSin * outSin);
-			return {.survive = true, .dir = (outSin * L + outCos * N).unit()};
+			Vec out = (outSin * L + outCos * NN).unit();
+			return {.survive = true, .dir = out};
 		} else {
 			return {.survive = false};
 		}
+	}
+
+	static Vec reflect(const Vec &I, const Vec &N) { // input direction & normal vector
+		return (I - 2.0 * I.dot(N) * N).unit();
 	}
 };

@@ -11,6 +11,16 @@ struct FirstHitResult {
 	bool hit;
 	Object *object;
 	Vec hitPoint;
+	float dist;
+
+	void update(Object *_object, const Vec &_hitPoint, float _dist) {
+		if (!hit || _dist < dist) {
+			hit = true;
+			object = _object;
+			hitPoint = _hitPoint;
+			dist = _dist;
+		}
+	}
 };
 
 struct Scene {
@@ -38,19 +48,16 @@ struct Scene {
 		}
 	}
 
-	FirstHitResult firstHit(const Ray &ray) const {
-		FirstHitResult firstHitResult = {.hit = false};
-		float dist = 0.0;
+	FirstHitResult firstHit(const Ray &ray, FirstHitResult defaultResult = {.hit = false}) const {
+		bool skipLight = defaultResult.hit;
 		for (Object *object : objects) {
+			if (skipLight && dynamic_cast<Light *>(object)) continue;
 			IntersectionResult intersectionResult = object->intersect(ray);
-			float newDist = ray.origin.dist(intersectionResult.hitPoint);
-			if (intersectionResult.hit && (!firstHitResult.hit || newDist < dist)) {
-				firstHitResult.hit = true;
-				firstHitResult.object = object;
-				firstHitResult.hitPoint = intersectionResult.hitPoint;
-				dist = newDist;
+			if (intersectionResult.hit) {
+				float dist = ray.origin.dist(intersectionResult.hitPoint);
+				defaultResult.update(object, intersectionResult.hitPoint, dist);
 			}
 		}
-		return firstHitResult;
+		return defaultResult;
 	}
 };
