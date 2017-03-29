@@ -27,7 +27,8 @@ struct Screen {
 		pixels[i][j] = color;
 	}
 
-	void print(FILE *file) const {
+	void print(const char * filename) const {
+		FILE *file = fopen(filename, "w");
 		fprintf(file, "P3\n");
 		fprintf(file, "%d %d\n", width, height);
 		fprintf(file, "255\n");
@@ -42,5 +43,6 @@ struct Screen {
 				}
 			}
 		}
+		fclose(file);
 	}
 };

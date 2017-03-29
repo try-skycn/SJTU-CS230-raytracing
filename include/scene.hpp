@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "resources.hpp"
 #include "vec.hpp"
 #include "object.hpp"
 #include "ray.hpp"
@@ -26,10 +27,17 @@ struct FirstHitResult {
 struct Scene {
 	// members
 
+	std::vector<Vec> shadings;
 	std::vector<Object *> objects;
 	std::vector<Light *> lights;
 
 	// constructors & destructor
+
+	Scene() {
+		for (int i = 0; i < 10; ++i) {
+			shadings.push_back(Scene::sampleShading());
+		}
+	}
 
 	~Scene() {
 		lights.clear();
@@ -59,5 +67,13 @@ struct Scene {
 			}
 		}
 		return defaultResult;
+	}
+
+	// static member methods
+
+	static Vec sampleShading() {
+		static float PI = 3.1415926535f;
+		float theta = randf() * 2.0f * PI, z = randf() * 0.5f, h = sqrtf(1.0f - z * z);
+		return Vec(z, h * std::cosf(theta), h * std::sinf(theta)).unit();
 	}
 };

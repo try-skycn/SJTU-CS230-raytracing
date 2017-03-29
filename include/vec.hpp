@@ -115,6 +115,17 @@ struct Vec {
 		return (r - *this).unit();
 	}
 
+	Vec rotate() const {
+		float fx = fabsf(x), fy = fabsf(y), fz = fabsf(z);
+		if (fx <= fy && fx <= fz) {
+			return cross(Vec(x, z, -y)).unit();
+		} else if (fy <= fx && fy <= fz) {
+			return cross(Vec(z, y, -x)).unit();
+		} else {
+			return cross(Vec(y, -x, z)).unit();
+		}
+	}
+
 	friend Vec fminf(const Vec &l, const Vec &r) {
 		return Vec(std::fminf(l.x, r.x), std::fminf(l.y, r.y), std::fminf(l.z, r.z));
 	}

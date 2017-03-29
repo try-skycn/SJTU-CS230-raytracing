@@ -36,17 +36,17 @@ struct Renderer {
 
 	// member methods
 
-	bool render(FILE *file) {
+	bool render(const char *filename) {
 		for (int i = 0; i < camera.screen.height; ++i) {
 			for (int j = 0; j < camera.screen.width; ++j) {
 				camera.see(i, j, scene, config);
 			}
 		}
-		camera.screen.print(file);
+		camera.screen.print(filename);
 		return true;
 	}
 
-	bool multiWorkerRender(FILE *file) {
+	bool multiWorkerRender(const char *filename) {
 		flag_to_stop = false;
 		flag_stopped = false;
 		cnt_rendered = 0;
@@ -99,7 +99,7 @@ struct Renderer {
 		}
 		for (auto &worker : workers) worker.join();
 		fprintf(stderr, "done\n");
-		camera.screen.print(file);
+		camera.screen.print(filename);
 		flag_stopped = true;
 		return true;
 	}
@@ -112,18 +112,19 @@ struct Renderer {
 const Scene &buildScene(Scene &scene) {
 	scene.addObject(
 			new AreaLight(
-					RectangleShape(Vec(2.6f, 2, -1.9f), Vec(2.4f, 2, -1.9f), Vec(2.4f, 2, -1.7f)),
-					Color(1, 1, 1), 20
+					RectangleShape(Vec(2.0f, 2, -1.2f), Vec(1.8f, 2, -1.2f), Vec(1.8f, 2, -1.0f)),
+					Color(1, 1, 1) * 4, 20
 			)
 	);
 
-	scene.addObject(new SpotLight(Vec(1, 1, 0), Color(1, 1, 1)));
+//	scene.addObject(new SpotLight(Vec(1, 1, 0), Color(1, 1, 1)));
 //	scene->addObject(new SpotLight(Vec(2, 1, 1), Color(1, 1, 1)));
 //	scene->addObject(new SpotLight(Vec(1.5, 0.5, -1.75f), Color(1, 1, 1) * 0.25));
 	Material wallMaterial{
 			.color = Color(1, 1, 1),
 			.kReflection = 0.0f,
-			.kShading = 1.0f,
+			.kShading = 0.3f,
+			.kDiffuseReflection = 0.7f,
 			.kRefraction = 0.0f,
 			.kDiffuseShading = 1.0f,
 			.kSpecularShading = 0.0f,
@@ -159,8 +160,9 @@ const Scene &buildScene(Scene &scene) {
 					Material{
 							.color = Color(0, 1, 0),
 							.kReflection = 0.0f,
-							.kShading = 0.3f,
-							.kRefraction = 0.7f,
+							.kShading = 0.1f,
+							.kDiffuseReflection = 0.0f,
+							.kRefraction = 0.9f,
 							.index = 1.05,
 							.kDiffuseShading = 0.5f,
 							.kSpecularShading = 0.5f

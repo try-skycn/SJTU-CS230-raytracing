@@ -20,8 +20,7 @@ struct Tracer {
 	const Ray &ray;
 	const int depth;
 
-	Vec H, N, R, F; // hit point & normal vector & reflection vector & refraction vector
-	bool survive; // survive refraction
+	Vec H, N, R; // hit point & normal vector & reflection vector
 
 	// constructor
 
@@ -40,7 +39,7 @@ struct Tracer {
 	// trace
 
 	Color trace(FirstHitResult defaultHit = {.hit = false}) {
-		if (depth == 0) return Color();
+		if (depth <= 0) return Color();
 		FirstHitResult firstHitResult = scene.firstHit(ray, defaultHit);
 		if (firstHitResult.hit) {
 			H = firstHitResult.hitPoint;
@@ -65,6 +64,7 @@ struct Tracer {
 				N = normalObject->getNormal(H);
 				R = NormalObject::reflect(ray.dir, N);
 				return shading(normalObject->material) +
+				       diffuseReflection(normalObject->material) +
 				       reflection(normalObject->material) +
 				       refraction(normalObject->material);
 			}
@@ -101,6 +101,20 @@ struct Tracer {
 
 	Color resolveShading(const Material &material, SpotLight *spotLight) const {
 		return resolveSpotShading(material, static_cast<Light *>(spotLight), spotLight->getCenter());
+	}
+
+	// diffuse reflection
+
+	Color diffuseReflection(const Material &material) const {
+		if (material.kDiffuseReflection > 0) {
+			Vec L = N.rotate(), U = N.cross(L);
+			Color result;
+			for (Vec V : scene.shadings) {
+				result += Tracer(*this, Ray(H, V.x * N + V.y * L + V.z * U), std::min(depth - 1, 2)).trace();
+			}
+			return result / scene.shadings.size() * material.kDiffuseReflection;
+		}
+		return Color();
 	}
 
 	// reflection
