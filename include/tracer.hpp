@@ -55,7 +55,9 @@ struct Tracer {
 	}
 
 	Color resolveHit(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, int depth) const {
-		return shading(ray, normalObject, hitPoint) + reflection(ray, normalObject, hitPoint, depth);
+		return shading(ray, normalObject, hitPoint) +
+				reflection(ray, normalObject, hitPoint, depth) +
+				refraction(ray, normalObject, hitPoint, depth);
 	}
 
 	// shading
@@ -110,11 +112,10 @@ struct Tracer {
 
 	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, AreaLight *areaLight) const {
 		Color result;
-		for (int i = 0; i < config->areaLightSamples; ++i) {
-			result += resolveSpotShading(ray, normalObject, hitPoint, static_cast<Light *>(areaLight),
-			                             areaLight->rectangle.sample());
+		for (const Vec &sample : areaLight->samples) {
+			result += resolveSpotShading(ray, normalObject, hitPoint, static_cast<Light *>(areaLight), sample);
 		}
-		return result / static_cast<float>(config->areaLightSamples);
+		return result / static_cast<float>(areaLight->samples.size());
 	}
 
 	Color resolveShading(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, SpotLight *spotLight) const {
@@ -126,6 +127,21 @@ struct Tracer {
 	Color reflection(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, int depth) const {
 		if (normalObject->material.kReflection > 0) {
 			return trace(Ray(hitPoint, normalObject->reflect(ray.dir, hitPoint)), depth - 1) * normalObject->material.kReflection;
+		} else {
+			return Color();
+		}
+	}
+
+	// refraction
+
+	Color refraction(const Ray &ray, NormalObject *normalObject, const Vec &hitPoint, int depth) const {
+		if (normalObject->material.kRefraction > 0) {
+			RefractResult refractResult = normalObject->refract(ray.dir, hitPoint);
+			if (refractResult.survive) {
+				return trace(Ray(hitPoint, refractResult.dir), depth - 1) * normalObject->material.kRefraction;
+			} else {
+				return Color();
+			}
 		} else {
 			return Color();
 		}

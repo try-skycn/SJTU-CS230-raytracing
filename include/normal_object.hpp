@@ -3,9 +3,10 @@
 #include "object.hpp"
 #include "material.hpp"
 
-// struct Object {
-// static Vec get_refracted(const Vec &in_dir, const Vec &normal, float in_index, float out_index) { assert(false); return Vec(); }
-// };
+struct RefractResult {
+	bool survive;
+	Vec dir;
+};
 
 struct NormalObject : Object {
 	// members
@@ -24,5 +25,26 @@ struct NormalObject : Object {
 	Vec reflect(const Vec &inDir, const Vec &hitPoint) const {
 		Vec normal = getNormal(hitPoint);
 		return (inDir - 2.0 * inDir.dot(normal) * normal).unit();
+	}
+
+	RefractResult refract(const Vec &inDir, const Vec &hitPoint) const {
+		Vec N = getNormal(hitPoint);
+		float dot = inDir.dot(N);
+		Vec L = (inDir - dot * N).unit();
+		float inSin = inDir.dot(L), outSin;
+		if (dot <= 0) {
+			// positive
+			outSin = inSin / material.index;
+			N = -N;
+		} else {
+			// negative
+			outSin = inSin * material.index;
+		}
+		if (outSin < 1) {
+			float outCos = std::sqrtf(1.0f - outSin * outSin);
+			return {.survive = true, .dir = (outSin * L + outCos * N).unit()};
+		} else {
+			return {.survive = false};
+		}
 	}
 };

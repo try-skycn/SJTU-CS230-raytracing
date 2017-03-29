@@ -111,33 +111,37 @@ struct Renderer {
 
 Scene *buildScene() {
 	Scene *scene = new Scene;
-//	scene->addObject(
-//			new AreaLight(
-//					RectangleShape(Vec(4, 2, -2), Vec(2, 2, -2), Vec(2, 2, 2)),
-//					Color(1, 1, 1)
-//			)
-//	);
+	scene->addObject(
+			new AreaLight(
+					RectangleShape(Vec(2.6f, 2, -1.6f), Vec(2.4f, 2, -1.6f), Vec(2.4f, 2, -1.4f)),
+					Color(1, 1, 1), 20
+			)
+	);
 
 	scene->addObject(new SpotLight(Vec(1, 1, 0), Color(1, 1, 1)));
-	scene->addObject(new SpotLight(Vec(2, 1, 1), Color(1, 1, 1)));
+//	scene->addObject(new SpotLight(Vec(2, 1, 1), Color(1, 1, 1)));
 //	scene->addObject(new SpotLight(Vec(1.5, 0.5, -1.75f), Color(1, 1, 1) * 0.25));
 	Material wallMaterial{
 			.color = Color(1, 1, 1),
 			.kReflection = 0.0f,
 			.kShading = 1.0f,
+			.kRefraction = 0.0f,
 			.kDiffuseShading = 1.0f,
-			.kSpecularShading = 0.0f
+			.kSpecularShading = 0.0f,
+			.index = 1.0f
 	};
 	GeometryObject *newObject;
 	// bottom
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 0), Vec(0, 1, 0)), wallMaterial);
-	newObject->material.color = Color(0.8, 0, 0);
-	newObject->material.kShading = 0.3f;
-	newObject->material.kReflection = 0.7f;
+	newObject->material.color = Color(0.5, 0.5, 0.5);
+	newObject->material.kShading = 0.7f;
+	newObject->material.kReflection = 0.3f;
 	scene->addObject(newObject);
 	// left
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, -2), Vec(0, 0, 1)), wallMaterial);
 	newObject->material.color = Color(0, 0.8, 0);
+	newObject->material.kShading = 0.3f;
+	newObject->material.kReflection = 0.7f;
 	scene->addObject(newObject);
 	// right
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 2), Vec(0, 0, -1)), wallMaterial);
@@ -157,8 +161,10 @@ Scene *buildScene() {
 					new SphereShape(Vec(2, 0.5f, -1.0f), 0.5f),
 					Material{
 							.color = Color(0, 1, 0),
-							.kReflection = 0.0f,
-							.kShading = 1.0f,
+							.kReflection = 0.3f,
+							.kShading = 0.5f,
+							.kRefraction = 0.2f,
+							.index = 1.01,
 							.kDiffuseShading = 0.5f,
 							.kSpecularShading = 0.5f
 					}
