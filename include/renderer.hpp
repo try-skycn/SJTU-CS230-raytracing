@@ -16,6 +16,7 @@
 #include "geometry_object.hpp"
 #include "plane_shape.hpp"
 #include "sphere_shape.hpp"
+#include "triangle_shape.hpp"
 #include "camera.hpp"
 #include "traceconfig.hpp"
 
@@ -110,14 +111,14 @@ struct Renderer {
 };
 
 const Scene &buildScene(Scene &scene) {
-	scene.addObject(
-			new AreaLight(
-					RectangleShape(Vec(2.0f, 2, -1.2f), Vec(1.8f, 2, -1.2f), Vec(1.8f, 2, -1.0f)),
-					Color(1, 1, 1) * 4, 20
-			)
-	);
+//	scene.addObject(
+//			new AreaLight(
+//					RectangleShape(Vec(2.0f, 2, -1.2f), Vec(1.8f, 2, -1.2f), Vec(1.8f, 2, -1.0f)),
+//					Color(1, 1, 1) * 4, 20
+//			)
+//	);
 
-//	scene.addObject(new SpotLight(Vec(1, 1, 0), Color(1, 1, 1)));
+	scene.addObject(new SpotLight(Vec(2, 2, 0), Color(1, 1, 1) * 4));
 //	scene->addObject(new SpotLight(Vec(2, 1, 1), Color(1, 1, 1)));
 //	scene->addObject(new SpotLight(Vec(1.5, 0.5, -1.75f), Color(1, 1, 1) * 0.25));
 	Material wallMaterial{
@@ -154,20 +155,24 @@ const Scene &buildScene(Scene &scene) {
 	newObject->material.color = Color(0, 0.8, 0.8);
 	scene.addObject(newObject);
 	// ball
-	scene.addObject(
-			new GeometryObject(
-					new SphereShape(Vec(2, 0.5f, 0), 0.5f),
-					Material{
-							.color = Color(0, 1, 0),
-							.kReflection = 0.0f,
-							.kShading = 0.1f,
-							.kDiffuseReflection = 0.0f,
-							.kRefraction = 0.9f,
-							.index = 1.05,
-							.kDiffuseShading = 0.5f,
-							.kSpecularShading = 0.5f
-					}
-			)
-	);
+//	scene.addObject(
+//			new GeometryObject(
+//					new SphereShape(Vec(2, 0.5f, 0), 0.5f),
+//					Material{
+//							.color = Color(0, 1, 0),
+//							.kReflection = 0.0f,
+//							.kShading = 0.1f,
+//							.kDiffuseReflection = 0.0f,
+//							.kRefraction = 0.9f,
+//							.index = 1.05,
+//							.kDiffuseShading = 0.5f,
+//							.kSpecularShading = 0.5f
+//					}
+//			)
+//	);
+	// triangle
+	newObject = new GeometryObject(new TriangleShape(Vec(3, 1, 0), Vec(2, -0.5f, -1.0f), Vec(1.5f, -1.0f, 1.0f)), wallMaterial);
+	newObject->material.color = Vec(0, 1.0f, 1.0f);
+	scene.addObject(newObject);
 	return scene;
 }
