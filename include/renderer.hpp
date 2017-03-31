@@ -48,6 +48,7 @@ struct Renderer {
 	}
 
 	bool multiWorkerRender(const char *filename) {
+		// referenced to https://github.com/abcdabcd987/ray-tracing/blob/master/src/raytracer.hpp
 		flag_to_stop = false;
 		flag_stopped = false;
 		cnt_rendered = 0;
@@ -110,6 +111,55 @@ struct Renderer {
 	}
 };
 
+void loadObjFile(const char *filename, Scene &scene) {
+	// referenced to https://github.com/abcdabcd987/ray-tracing/blob/master/src/geometry.hpp
+	FILE *f = fopen(filename, "r");
+	if (!f) return;
+
+	Material defaultMaterial{
+			.color = Color(0, 1, 1),
+			.kShading = 1.0f,
+			.kReflection = 0.0f,
+			.kDiffuseReflection = 0.0f,
+			.kRefraction = 0.0f,
+			.kDiffuseShading = 0.7f,
+			.kSpecularShading = 0.3f,
+			.index = 1.0f
+	};
+
+	std::vector<Vec> vertices;
+	char buf[100];
+	while (fscanf(f, " %s", buf) != EOF) {
+		if (strcmp(buf, "v") == 0) {
+			float x, y, z;
+			fscanf(f, "%f%f%f", &x, &y, &z);
+			Vec point = Vec(x, y, z) * 0.5 + Vec(2, 0.5, 0);
+			vertices.push_back(point);
+		} else if (strcmp(buf, "f") == 0) {
+			int v[3];
+			for (int i = 0; i < 3; ++i) {
+				fscanf(f, " %s", buf);
+				sscanf(buf, "%d", &v[i]);
+				--v[i];
+			}
+			scene.addObject(new GeometryObject(new TriangleShape(vertices[v[0]], vertices[v[1]], vertices[v[2]]), defaultMaterial));
+		} else if (buf[0] == '#'
+		           || strcmp(buf, "mtllib") == 0
+		           || strcmp(buf, "vn") == 0
+		           || strcmp(buf, "vt") == 0
+		           || strcmp(buf, "s") == 0
+		           || strcmp(buf, "g") == 0
+		           || strcmp(buf, "o") == 0
+		           || strcmp(buf, "usemtl") == 0) {
+			// not supported
+			while (fgetc(f) != '\n');
+		} else {
+			return;
+		}
+	}
+	fclose(f);
+}
+
 const Scene &buildScene(Scene &scene) {
 //	scene.addObject(
 //			new AreaLight(
@@ -118,14 +168,14 @@ const Scene &buildScene(Scene &scene) {
 //			)
 //	);
 
-	scene.addObject(new SpotLight(Vec(2, 2, 0), Color(1, 1, 1) * 4));
+	scene.addObject(new SpotLight(Vec(2, 3, 0), Color(1, 1, 1)));
 //	scene->addObject(new SpotLight(Vec(2, 1, 1), Color(1, 1, 1)));
 //	scene->addObject(new SpotLight(Vec(1.5, 0.5, -1.75f), Color(1, 1, 1) * 0.25));
 	Material wallMaterial{
 			.color = Color(1, 1, 1),
-			.kReflection = 0.0f,
-			.kShading = 0.3f,
-			.kDiffuseReflection = 0.7f,
+			.kShading = 0.7f,
+			.kReflection = 0.3f,
+			.kDiffuseReflection = 0.0f,
 			.kRefraction = 0.0f,
 			.kDiffuseShading = 1.0f,
 			.kSpecularShading = 0.0f,
@@ -160,19 +210,21 @@ const Scene &buildScene(Scene &scene) {
 //					new SphereShape(Vec(2, 0.5f, 0), 0.5f),
 //					Material{
 //							.color = Color(0, 1, 0),
-//							.kReflection = 0.0f,
 //							.kShading = 0.1f,
+//							.kReflection = 0.0f,
 //							.kDiffuseReflection = 0.0f,
 //							.kRefraction = 0.9f,
-//							.index = 1.05,
 //							.kDiffuseShading = 0.5f,
-//							.kSpecularShading = 0.5f
+//							.kSpecularShading = 0.5f,
+//							.index = 1.05
 //					}
 //			)
 //	);
 	// triangle
-	newObject = new GeometryObject(new TriangleShape(Vec(3, 1, 0), Vec(2, -0.5f, -1.0f), Vec(1.5f, -1.0f, 1.0f)), wallMaterial);
-	newObject->material.color = Vec(0, 1.0f, 1.0f);
-	scene.addObject(newObject);
+//	newObject = new GeometryObject(new TriangleShape(Vec(3, 1, 0), Vec(2, -0.5f, -1.0f), Vec(1.5f, -1.0f, 1.0f)), wallMaterial);
+//	newObject->material.color = Vec(0, 1.0f, 1.0f);
+//	scene.addObject(newObject);
+	// obj files
+	loadObjFile("../models/teapot.obj", scene);
 	return scene;
 }
