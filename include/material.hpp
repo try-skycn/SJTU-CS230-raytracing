@@ -5,8 +5,8 @@
 struct Material {
 	Color color;
 	float kShading;
-	float kDiffuseReflection;
 	float kReflection;
+	float kDiffuseReflection;
 	float kRefraction;
 	float kDiffuseShading;
 	float kSpecularShading;
