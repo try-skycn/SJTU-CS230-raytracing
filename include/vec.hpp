@@ -5,6 +5,14 @@
 
 constexpr float EPS = 1e-4;
 
+namespace std {
+	#define powf pow
+	#define sinf sin
+	#define sqrtf sqrt
+	#define cosf cos
+	#define expf exp
+}
+
 struct Vec {
 	// members
 

@@ -5,7 +5,7 @@ INCLUDE=../include
 OBJ=../obj
 BIN=../bin
 
-CFLAGS=--std=c++14
+CFLAGS=--std=c++14 -lm -pthread
 
 .PHONY: main
 main: $(SRC)/main.cpp $(DEPS)
