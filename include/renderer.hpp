@@ -174,9 +174,9 @@ const Scene &buildScene(Scene &scene) {
 //	scene->addObject(new SpotLight(Vec(1.5, 0.5, -1.75f), Color(1, 1, 1) * 0.25));
 	Material wallMaterial{
 			.color = Color(1, 1, 1),
-			.kShading = 0.7f,
-			.kReflection = 0.3f,
-			.kDiffuseReflection = 0.0f,
+			.kShading = 0.6f,
+			.kReflection = 0.0f,
+			.kDiffuseReflection = 0.4f,
 			.kRefraction = 0.0f,
 			.kDiffuseShading = 1.0f,
 			.kSpecularShading = 0.0f,
@@ -226,6 +226,6 @@ const Scene &buildScene(Scene &scene) {
 //	newObject->material.color = Vec(0, 1.0f, 1.0f);
 //	scene.addObject(newObject);
 	// obj files
-	loadObjFile("../models/teapot.obj", scene);
+//	loadObjFile("../models/teapot.obj", scene);
 	return scene;
 }
