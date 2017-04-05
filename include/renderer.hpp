@@ -166,7 +166,7 @@ const Scene &buildScene(Scene &scene) {
 	scene.addObject(
 			new AreaLight(
 					RectangleShape(Vec(2.2f, 2.5f, -0.2f), Vec(1.8f, 2.5f, -0.2f), Vec(1.8f, 2.5f, 0.2f)),
-					Color(1, 1, 1) * 4, 20
+					Color(1, 1, 1) * 4, 50
 			)
 	);
 
