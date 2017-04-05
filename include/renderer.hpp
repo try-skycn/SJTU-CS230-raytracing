@@ -165,7 +165,7 @@ void loadObjFile(const char *filename, Scene &scene, float rotate, float stretch
 const Scene &buildScene(Scene &scene) {
 	scene.addObject(
 			new AreaLight(
-					RectangleShape(Vec(2.0f, 2, -1.2f), Vec(1.8f, 2, -1.2f), Vec(1.8f, 2, -1.0f)),
+					RectangleShape(Vec(2.2f, 2.5f, -0.2f), Vec(1.8f, 2.5f, -0.2f), Vec(1.8f, 2.5f, 0.2f)),
 					Color(1, 1, 1) * 4, 20
 			)
 	);
@@ -191,11 +191,11 @@ const Scene &buildScene(Scene &scene) {
 //	newObject->material.kDiffuseReflection = 0.8f;
 	scene.addObject(newObject);
 	// left
-	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, -2), Vec(0, 0, 1)), wallMaterial);
+	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, -3), Vec(0, 0, 1)), wallMaterial);
 	newObject->material.color = Color(0, 0.8, 0);
 	scene.addObject(newObject);
 	// right
-	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 2), Vec(0, 0, -1)), wallMaterial);
+	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 3), Vec(0, 0, -1)), wallMaterial);
 	newObject->material.color = Color(0, 0, 0.8);
 	scene.addObject(newObject);
 	// top
@@ -203,9 +203,9 @@ const Scene &buildScene(Scene &scene) {
 	newObject->material.color = Color(0.8, 0, 0.8);
 	scene.addObject(newObject);
 	// front
-	newObject = new GeometryObject(new PlaneShape(Vec(5, 0, 0), Vec(-1, 0, 0)), wallMaterial);
-	newObject->material.color = Color(0, 0.8, 0.8);
-	scene.addObject(newObject);
+//	newObject = new GeometryObject(new PlaneShape(Vec(5, 0, 0), Vec(-1, 0, 0)), wallMaterial);
+//	newObject->material.color = Color(0, 0.8, 0.8);
+//	scene.addObject(newObject);
 	// ball
 //	scene.addObject(
 //			new GeometryObject(
@@ -227,6 +227,6 @@ const Scene &buildScene(Scene &scene) {
 //	newObject->material.color = Vec(0, 1.0f, 1.0f);
 //	scene.addObject(newObject);
 	// obj files
-	loadObjFile("../models/teapot.obj", scene, PI * 0.5f, 0.5, Vec(2, 0.5f, 0));
+	loadObjFile("../models/teapot.obj", scene, PI * 0.5f, 0.25f, Vec(2, 0.5f, 0));
 	return scene;
 }
