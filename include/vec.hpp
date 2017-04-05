@@ -5,6 +5,7 @@
 
 constexpr float EPS = 1e-4;
 
+#ifdef __linux__
 namespace std {
 	#define powf pow
 	#define sinf sin
@@ -12,6 +13,7 @@ namespace std {
 	#define cosf cos
 	#define expf exp
 }
+#endif
 
 struct Vec {
 	// members
