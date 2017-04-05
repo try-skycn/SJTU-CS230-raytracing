@@ -199,13 +199,13 @@ const Scene &buildScene(Scene &scene) {
 	newObject->material.color = Color(0, 0, 0.8);
 	scene.addObject(newObject);
 	// top
-	newObject = new GeometryObject(new PlaneShape(Vec(0, 4, 0), Vec(0, -1, 0)), wallMaterial);
-	newObject->material.color = Color(0.8, 0, 0.8);
-	scene.addObject(newObject);
-	// front
-//	newObject = new GeometryObject(new PlaneShape(Vec(5, 0, 0), Vec(-1, 0, 0)), wallMaterial);
-//	newObject->material.color = Color(0, 0.8, 0.8);
+//	newObject = new GeometryObject(new PlaneShape(Vec(0, 4, 0), Vec(0, -1, 0)), wallMaterial);
+//	newObject->material.color = Color(0.8, 0, 0.8);
 //	scene.addObject(newObject);
+	// front
+	newObject = new GeometryObject(new PlaneShape(Vec(5, 0, 0), Vec(-1, 0, 0)), wallMaterial);
+	newObject->material.color = Color(0, 0.8, 0.8);
+	scene.addObject(newObject);
 	// ball
 //	scene.addObject(
 //			new GeometryObject(
