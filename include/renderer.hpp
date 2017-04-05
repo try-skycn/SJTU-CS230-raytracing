@@ -185,10 +185,10 @@ const Scene &buildScene(Scene &scene) {
 	GeometryObject *newObject;
 	// bottom
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 0), Vec(0, 1, 0)), wallMaterial);
-	newObject->material.color = Color(0.5, 0.5, 0.5);
+	newObject->material.color = Color(1, 1, 1);
 	newObject->material.kShading = 0.2f;
-	newObject->material.kDiffuseShading = 0.8f;
-//	scene.addObject(newObject);
+	newObject->material.kDiffuseReflection = 0.8f;
+	scene.addObject(newObject);
 	// left
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, -2), Vec(0, 0, 1)), wallMaterial);
 	newObject->material.color = Color(0, 0.8, 0);
