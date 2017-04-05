@@ -11,6 +11,7 @@
 #include <cstring>
 #include "../vender/concurrentqueue/concurrentqueue.h"
 
+#include "resources.hpp"
 #include "scene.hpp"
 #include "screen.hpp"
 #include "tracer.hpp"
@@ -112,7 +113,7 @@ struct Renderer {
 	}
 };
 
-void loadObjFile(const char *filename, Scene &scene) {
+void loadObjFile(const char *filename, Scene &scene, float rotate, float stretch, const Vec &move) {
 	// referenced to https://github.com/abcdabcd987/ray-tracing/blob/master/src/geometry.hpp
 	FILE *f = fopen(filename, "r");
 	if (!f) return;
@@ -134,7 +135,7 @@ void loadObjFile(const char *filename, Scene &scene) {
 		if (strcmp(buf, "v") == 0) {
 			float x, y, z;
 			fscanf(f, "%f%f%f", &x, &y, &z);
-			Vec point = Vec(x, y, z) * 0.5 + Vec(2, 0.5, 0);
+			Vec point = Vec(x * cosf(rotate) - z * sinf(rotate), y, x * sinf(rotate) + z * cosf(rotate)) * stretch + move;
 			vertices.push_back(point);
 		} else if (strcmp(buf, "f") == 0) {
 			int v[3];
@@ -162,14 +163,14 @@ void loadObjFile(const char *filename, Scene &scene) {
 }
 
 const Scene &buildScene(Scene &scene) {
-//	scene.addObject(
-//			new AreaLight(
-//					RectangleShape(Vec(2.0f, 2, -1.2f), Vec(1.8f, 2, -1.2f), Vec(1.8f, 2, -1.0f)),
-//					Color(1, 1, 1) * 4, 20
-//			)
-//	);
+	scene.addObject(
+			new AreaLight(
+					RectangleShape(Vec(2.0f, 2, -1.2f), Vec(1.8f, 2, -1.2f), Vec(1.8f, 2, -1.0f)),
+					Color(1, 1, 1) * 4, 20
+			)
+	);
 
-	scene.addObject(new SpotLight(Vec(2, 3, 0), Color(1, 1, 1)));
+//	scene.addObject(new SpotLight(Vec(2, 3, 0), Color(1, 1, 1)));
 //	scene->addObject(new SpotLight(Vec(2, 1, 1), Color(1, 1, 1)));
 //	scene->addObject(new SpotLight(Vec(1.5, 0.5, -1.75f), Color(1, 1, 1) * 0.25));
 	Material wallMaterial{
@@ -186,8 +187,8 @@ const Scene &buildScene(Scene &scene) {
 	// bottom
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 0), Vec(0, 1, 0)), wallMaterial);
 	newObject->material.color = Color(1, 1, 1);
-	newObject->material.kShading = 0.2f;
-	newObject->material.kDiffuseReflection = 0.8f;
+//	newObject->material.kShading = 0.2f;
+//	newObject->material.kDiffuseReflection = 0.8f;
 	scene.addObject(newObject);
 	// left
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, -2), Vec(0, 0, 1)), wallMaterial);
@@ -226,6 +227,6 @@ const Scene &buildScene(Scene &scene) {
 //	newObject->material.color = Vec(0, 1.0f, 1.0f);
 //	scene.addObject(newObject);
 	// obj files
-//	loadObjFile("../models/teapot.obj", scene);
+	loadObjFile("../models/teapot.obj", scene, PI * 0.5f, 0.5, Vec(2, 0.5f, 0));
 	return scene;
 }

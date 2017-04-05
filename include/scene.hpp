@@ -73,7 +73,6 @@ struct Scene {
 	// static member methods
 
 	static Vec sampleShading() {
-		static float PI = 3.1415926535f;
 		float theta = randf() * 2.0f * PI, z = randf() * 0.5f, h = sqrtf(1.0f - z * z);
 		return Vec(z, h * std::cosf(theta), h * std::sinf(theta)).unit();
 	}
