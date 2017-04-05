@@ -1,19 +1,6 @@
 #pragma once
 
-#include <cmath>
-#include <algorithm>
-
-constexpr float EPS = 1e-4;
-
-#ifdef __linux__
-namespace std {
-	#define powf pow
-	#define sinf sin
-	#define sqrtf sqrt
-	#define cosf cos
-	#define expf exp
-}
-#endif
+#include "resources.hpp"
 
 struct Vec {
 	// members
