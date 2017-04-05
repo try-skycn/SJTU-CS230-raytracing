@@ -166,7 +166,7 @@ const Scene &buildScene(Scene &scene) {
 	scene.addObject(
 			new AreaLight(
 					RectangleShape(Vec(2.2f, 2.5f, -0.2f), Vec(1.8f, 2.5f, -0.2f), Vec(1.8f, 2.5f, 0.2f)),
-					Color(1, 1, 1) * 4, 50
+					Color(1, 1, 1), 50
 			)
 	);
 
@@ -186,26 +186,27 @@ const Scene &buildScene(Scene &scene) {
 	GeometryObject *newObject;
 	// bottom
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 0), Vec(0, 1, 0)), wallMaterial);
-	newObject->material.color = Color(1, 1, 1) * 0.7f;
+	newObject->material.color = Color(0, 0.501f, 1) * 0.7f;
 	newObject->material.kShading = 0.6f;
 	newObject->material.kReflection = 0.8f;
 	scene.addObject(newObject);
 	// left
-	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, -3), Vec(0, 0, 1)), wallMaterial);
-	newObject->material.color = Color(0, 0.8, 0);
-	scene.addObject(newObject);
-	// right
-	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 3), Vec(0, 0, -1)), wallMaterial);
-	newObject->material.color = Color(0, 0, 0.8);
-	scene.addObject(newObject);
+//	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, -3), Vec(0, 0, 1)), wallMaterial);
+//	newObject->material.color = Color(0, 0.8, 0);
+//	scene.addObject(newObject);
+//	// right
+//	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 3), Vec(0, 0, -1)), wallMaterial);
+//	newObject->material.color = Color(0, 0, 0.8);
+//	scene.addObject(newObject);
 	// top
 //	newObject = new GeometryObject(new PlaneShape(Vec(0, 4, 0), Vec(0, -1, 0)), wallMaterial);
 //	newObject->material.color = Color(0.8, 0, 0.8);
 //	scene.addObject(newObject);
 	// front
 	newObject = new GeometryObject(new PlaneShape(Vec(5, 0, 0), Vec(-1, 0, 0)), wallMaterial);
-	newObject->material.color = Color(1, 1, 1);
-	newObject->material.kReflection = 1.0f;
+	newObject->material.color = Color(0.8f, 0.4, 1);
+	newObject->material.kShading = 0.6f;
+	newObject->material.kReflection = 0.4f;
 	scene.addObject(newObject);
 	// ball
 	scene.addObject(
@@ -217,6 +218,21 @@ const Scene &buildScene(Scene &scene) {
 							.kReflection = 0.15f,
 							.kDiffuseReflection = 0.0f,
 							.kRefraction = 0.7f,
+							.kDiffuseShading = 0.5f,
+							.kSpecularShading = 0.5f,
+							.index = 1.1
+					}
+			)
+	);
+	scene.addObject(
+			new GeometryObject(
+					new SphereShape(Vec(3, 0.3f, 0), 0.3f),
+					Material{
+							.color = Color(0, 1, 0),
+							.kShading = 1.0f,
+							.kReflection = 0.0f,
+							.kDiffuseReflection = 0.0f,
+							.kRefraction = 0.0f,
 							.kDiffuseShading = 0.5f,
 							.kSpecularShading = 0.5f,
 							.index = 1.1
