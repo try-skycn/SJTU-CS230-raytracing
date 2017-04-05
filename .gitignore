@@ -2,7 +2,6 @@
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
@@ -38,5 +37,3 @@ cmake-build-debug/
 bin/*.ppm
 bin/main
 
-# models
-models/
