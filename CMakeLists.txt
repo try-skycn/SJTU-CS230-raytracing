@@ -29,6 +29,7 @@ set(SOURCE_FILES
         include/spot_light.hpp
         include/traceconfig.hpp
         include/tracer.hpp
+        include/triangle_shape.hpp
         include/vec.hpp
         src/main.cpp)
 

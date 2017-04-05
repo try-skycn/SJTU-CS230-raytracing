@@ -109,10 +109,11 @@ struct Tracer {
 		if (material.kDiffuseReflection > 0) {
 			Vec L = N.rotate(), U = N.cross(L);
 			Color result;
-			for (Vec V : scene.shadings) {
+			for (int i = 0; i < config.diffuseShadingNumbers; ++i) {
+				Vec V = Scene::sampleShading();
 				result += Tracer(*this, Ray(H, V.x * N + V.y * L + V.z * U), std::min(depth - 1, 2)).trace();
 			}
-			return result / scene.shadings.size() * material.kDiffuseReflection;
+			return result / config.diffuseShadingNumbers * material.kDiffuseReflection;
 		}
 		return Color();
 	}
