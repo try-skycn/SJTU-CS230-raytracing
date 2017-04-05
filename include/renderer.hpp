@@ -8,6 +8,7 @@
 #include <tuple>
 #include <cstdint>
 #include <cassert>
+#include <cstring>
 #include "../vender/concurrentqueue/concurrentqueue.h"
 
 #include "scene.hpp"
