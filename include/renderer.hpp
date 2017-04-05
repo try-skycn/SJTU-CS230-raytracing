@@ -186,8 +186,8 @@ const Scene &buildScene(Scene &scene) {
 	GeometryObject *newObject;
 	// bottom
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 0), Vec(0, 1, 0)), wallMaterial);
-	newObject->material.kShading = 0.5f;
-	newObject->material.kReflection = 0.5f;
+	// newObject->material.kShading = 0.5f;
+	// newObject->material.kReflection = 0.5f;
 	scene.addObject(newObject);
 	// left
 	// newObject = new GeometryObject(new PlaneShape(Vec(0, 0, -3), Vec(0, 0, 1)), wallMaterial);
@@ -203,8 +203,8 @@ const Scene &buildScene(Scene &scene) {
 //	scene.addObject(newObject);
 	// front
 	newObject = new GeometryObject(new PlaneShape(Vec(5, 0, 0), Vec(-1, 0, 0)), wallMaterial);
-	newObject->material.kShading = 0.7f;
-	newObject->material.kReflection = 0.3f;
+	// newObject->material.kShading = 0.7f;
+	// newObject->material.kReflection = 0.3f;
 	scene.addObject(newObject);
 	// ball
 //	scene.addObject(
