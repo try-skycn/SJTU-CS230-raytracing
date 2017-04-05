@@ -113,13 +113,13 @@ struct Renderer {
 	}
 };
 
-void loadObjFile(const char *filename, Scene &scene, float rotate, float stretch, const Vec &move) {
+void loadObjFile(const char *filename, Scene &scene, float rotate, float stretch, const Vec &move, const Color &color) {
 	// referenced to https://github.com/abcdabcd987/ray-tracing/blob/master/src/geometry.hpp
 	FILE *f = fopen(filename, "r");
 	if (!f) return;
 
 	Material defaultMaterial{
-			.color = Color(0, 1, 1),
+			.color = color,
 			.kShading = 1.0f,
 			.kReflection = 0.0f,
 			.kDiffuseReflection = 0.0f,
@@ -166,7 +166,7 @@ const Scene &buildScene(Scene &scene) {
 	scene.addObject(
 			new AreaLight(
 					RectangleShape(Vec(2.2f, 2.5f, -0.2f), Vec(1.8f, 2.5f, -0.2f), Vec(1.8f, 2.5f, 0.2f)),
-					Color(1, 1, 1) * 4, 50
+					Color(1, 1, 1), 50
 			)
 	);
 
@@ -174,7 +174,7 @@ const Scene &buildScene(Scene &scene) {
 //	scene->addObject(new SpotLight(Vec(2, 1, 1), Color(1, 1, 1)));
 //	scene->addObject(new SpotLight(Vec(1.5, 0.5, -1.75f), Color(1, 1, 1) * 0.25));
 	Material wallMaterial{
-			.color = Color(1, 1, 1),
+			.color = Color(0, 1, 0.501f),
 			.kShading = 1.0f,
 			.kReflection = 0.0f,
 			.kDiffuseReflection = 0.0f,
@@ -186,25 +186,25 @@ const Scene &buildScene(Scene &scene) {
 	GeometryObject *newObject;
 	// bottom
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 0), Vec(0, 1, 0)), wallMaterial);
-	newObject->material.color = Color(1, 1, 1);
-//	newObject->material.kShading = 0.2f;
-//	newObject->material.kDiffuseReflection = 0.8f;
+	newObject->material.kShading = 0.5f;
+	newObject->material.kReflection = 0.5f;
 	scene.addObject(newObject);
 	// left
-	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, -3), Vec(0, 0, 1)), wallMaterial);
-	newObject->material.color = Color(0, 0.8, 0);
-	scene.addObject(newObject);
+	// newObject = new GeometryObject(new PlaneShape(Vec(0, 0, -3), Vec(0, 0, 1)), wallMaterial);
+	// newObject->material.color = Color(0, 0.8, 0);
+	// scene.addObject(newObject);
 	// right
-	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 3), Vec(0, 0, -1)), wallMaterial);
-	newObject->material.color = Color(0, 0, 0.8);
-	scene.addObject(newObject);
+	// newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 3), Vec(0, 0, -1)), wallMaterial);
+	// newObject->material.color = Color(0, 0, 0.8);
+	// scene.addObject(newObject);
 	// top
 //	newObject = new GeometryObject(new PlaneShape(Vec(0, 4, 0), Vec(0, -1, 0)), wallMaterial);
 //	newObject->material.color = Color(0.8, 0, 0.8);
 //	scene.addObject(newObject);
 	// front
 	newObject = new GeometryObject(new PlaneShape(Vec(5, 0, 0), Vec(-1, 0, 0)), wallMaterial);
-	newObject->material.color = Color(0, 0.8, 0.8);
+	newObject->material.kShading = 0.7f;
+	newObject->material.kReflection = 0.3f;
 	scene.addObject(newObject);
 	// ball
 //	scene.addObject(
@@ -227,6 +227,6 @@ const Scene &buildScene(Scene &scene) {
 //	newObject->material.color = Vec(0, 1.0f, 1.0f);
 //	scene.addObject(newObject);
 	// obj files
-	loadObjFile("../models/teapot.obj", scene, PI * 0.5f, 0.25f, Vec(2, 0.5f, 0));
+	loadObjFile("../models/teapot.obj", scene, PI * 0.5f, 0.20f, Vec(1.0f, 0.5f, 0), Color(1, 0.501f, 0));
 	return scene;
 }
