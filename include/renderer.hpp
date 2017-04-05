@@ -186,7 +186,7 @@ const Scene &buildScene(Scene &scene) {
 	GeometryObject *newObject;
 	// bottom
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 0), Vec(0, 1, 0)), wallMaterial);
-	newObject->material.color = Color(1, 1, 1);
+	newObject->material.color = Color(1, 1, 1) * 0.7f;
 //	newObject->material.kShading = 0.2f;
 //	newObject->material.kDiffuseReflection = 0.8f;
 	scene.addObject(newObject);
@@ -207,26 +207,26 @@ const Scene &buildScene(Scene &scene) {
 	newObject->material.color = Color(0, 0.8, 0.8);
 	scene.addObject(newObject);
 	// ball
-//	scene.addObject(
-//			new GeometryObject(
-//					new SphereShape(Vec(2, 0.5f, 0), 0.5f),
-//					Material{
-//							.color = Color(0, 1, 0),
-//							.kShading = 0.1f,
-//							.kReflection = 0.0f,
-//							.kDiffuseReflection = 0.0f,
-//							.kRefraction = 0.9f,
-//							.kDiffuseShading = 0.5f,
-//							.kSpecularShading = 0.5f,
-//							.index = 1.05
-//					}
-//			)
-//	);
+	scene.addObject(
+			new GeometryObject(
+					new SphereShape(Vec(2, 0.5f, 0), 0.5f),
+					Material{
+							.color = Color(0, 1, 0),
+							.kShading = 0.15f,
+							.kReflection = 0.15f,
+							.kDiffuseReflection = 0.0f,
+							.kRefraction = 0.7f,
+							.kDiffuseShading = 0.5f,
+							.kSpecularShading = 0.5f,
+							.index = 1.05
+					}
+			)
+	);
 	// triangle
 //	newObject = new GeometryObject(new TriangleShape(Vec(3, 1, 0), Vec(2, -0.5f, -1.0f), Vec(1.5f, -1.0f, 1.0f)), wallMaterial);
 //	newObject->material.color = Vec(0, 1.0f, 1.0f);
 //	scene.addObject(newObject);
 	// obj files
-	loadObjFile("../models/teapot.obj", scene, PI * 0.5f, 0.25f, Vec(2, 0.5f, 0));
+//	loadObjFile("../models/teapot.obj", scene, PI * 0.5f, 0.25f, Vec(2, 0.5f, 0));
 	return scene;
 }
