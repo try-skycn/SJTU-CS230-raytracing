@@ -17,9 +17,13 @@ Please `git checkout soft-shadow` then make.
 
 The rendered picture is
 
-You can see that the shadow of the teapot is a soft one. (茶壶的阴影是软阴影)
+![Soft Shadow](images/soft-shadow.ppm)
 
-## Refraction (投射)
+You can see that the shadow of the teapot is a soft one.【茶壶的阴影是软阴影】
+
+The teapot is composed of `2644` vertices and `6320` triangles, which is loaded from file `models/teapot.obj`.【茶壶由`2644`个点和`6320`个三角面片组成，模型文件为`models/teapot.obj`】
+
+## Refraction (透射)
 
 Please `git checkout soft-shadow` then make.
 
