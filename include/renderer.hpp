@@ -29,11 +29,11 @@ struct Renderer {
 
 	Camera &camera;
 	const Scene &scene;
-	TraceConfig config;
+	const TraceConfig &config;
 
 	// constructors
 
-	Renderer(Camera &_camera, const Scene &_scene): camera(_camera), scene(_scene) {
+	Renderer(Camera &_camera, const Scene &_scene, const TraceConfig &_config): camera(_camera), scene(_scene), config(_config) {
 	}
 
 	// member methods
@@ -174,9 +174,9 @@ const Scene &buildScene(Scene &scene) {
 //	scene->addObject(new SpotLight(Vec(1.5, 0.5, -1.75f), Color(1, 1, 1) * 0.25));
 	Material wallMaterial{
 			.color = Color(1, 1, 1),
-			.kShading = 0.6f,
+			.kShading = 1.0f,
 			.kReflection = 0.0f,
-			.kDiffuseReflection = 0.4f,
+			.kDiffuseReflection = 0.0f,
 			.kRefraction = 0.0f,
 			.kDiffuseShading = 1.0f,
 			.kSpecularShading = 0.0f,
@@ -186,9 +186,9 @@ const Scene &buildScene(Scene &scene) {
 	// bottom
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, 0), Vec(0, 1, 0)), wallMaterial);
 	newObject->material.color = Color(0.5, 0.5, 0.5);
-//	newObject->material.kShading = 0.7f;
-//	newObject->material.kReflection = 0.3f;
-	scene.addObject(newObject);
+	newObject->material.kShading = 0.2f;
+	newObject->material.kDiffuseShading = 0.8f;
+//	scene.addObject(newObject);
 	// left
 	newObject = new GeometryObject(new PlaneShape(Vec(0, 0, -2), Vec(0, 0, 1)), wallMaterial);
 	newObject->material.color = Color(0, 0.8, 0);

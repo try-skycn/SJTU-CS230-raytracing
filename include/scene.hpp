@@ -7,6 +7,7 @@
 #include "ray.hpp"
 #include "light.hpp"
 #include "normal_object.hpp"
+#include "traceconfig.hpp"
 
 struct FirstHitResult {
 	bool hit;
@@ -27,16 +28,16 @@ struct FirstHitResult {
 struct Scene {
 	// members
 
-//	std::vector<Vec> shadings;
+	std::vector<Vec> shadings;
 	std::vector<Object *> objects;
 	std::vector<Light *> lights;
 
 	// constructors & destructor
 
-	Scene() {
-//		for (int i = 0; i < 10; ++i) {
-//			shadings.push_back(Scene::sampleShading());
-//		}
+	Scene(int diffuseShadingNumbers) {
+		for (int i = 0; i < diffuseShadingNumbers; ++i) {
+			shadings.push_back(Scene::sampleShading());
+		}
 	}
 
 	~Scene() {
