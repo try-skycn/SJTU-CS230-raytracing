@@ -25,7 +25,7 @@ The teapot is composed of `2644` vertices and `6320` triangles, which is loaded 
 
 ## Refraction 【透射】
 
-Please `git checkout soft-shadow` then make.
+Please `git checkout refraction` then make.
 
 The rendered picture is
 
@@ -35,7 +35,7 @@ There are two balls in the scene, one of solid green material, one of transparen
 
 ## Color Bleeding
 
-Please `git checkout soft-shadow` then make.
+Please `git checkout color-bleeding` then make.
 
 The rendered picture is
 
