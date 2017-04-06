@@ -9,7 +9,7 @@ Use `cd bin && make` to build target `main`.
 
 Run `./main` to generate the picture, the result would be put in file `output.ppm`.
 
-# Rendered Function (效果)
+# Rendered Function 【效果】
 
 ## Soft Shadow 【软阴影】
 
